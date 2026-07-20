@@ -10,7 +10,7 @@ class AuthController extends BaseController
 {
     public function index(): string
     {
-        return view('auth/login');        
+        return view('auth/login');
     }
 
     public function buildNumberValidation(): string{

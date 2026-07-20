@@ -4,9 +4,9 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class UtilisateurModel extends Model
+class PrefixModel extends Model
 {
-    protected $table            = 'utilisateur';
+    protected $table            = 'prefix';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
@@ -43,6 +43,4 @@ class UtilisateurModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
-
-    
 }
