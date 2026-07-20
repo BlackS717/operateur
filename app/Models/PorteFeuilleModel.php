@@ -12,7 +12,7 @@ class PorteFeuilleModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['solde'];
+    protected $allowedFields    = ['utilisateurId', 'solde'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -44,27 +44,30 @@ class PorteFeuilleModel extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-    public function findByUtilisateurId($utilisateurId)
+    public function getByUtilisateurId(int $utilisateurId): ?array
     {
         return $this->where('utilisateurId', $utilisateurId)->first();
     }
 
-    public function updateSolde($utilisateurId, $newSolde)
+    public function crediter(int $utilisateurId, float $montant): bool
     {
-        return $this->where('utilisateurId', $utilisateurId)->set('solde', $newSolde)->update();
-    }
-
-    public function createPorteFeuille($utilisateurId, $solde = 0)
-    {
-        return $this->insert([
-            'utilisateurId' => $utilisateurId,
-            'solde' => $solde
+        $portefeuille = $this->getByUtilisateurId($utilisateurId);
+        if ($portefeuille === null) {
+            return false;
+        }
+        return $this->update($portefeuille['id'], [
+            'solde' => $portefeuille['solde'] + $montant,
         ]);
     }
 
-    public function getSoldeByUtilisateurId($utilisateurId)
+    public function debiter(int $utilisateurId, float $montant): bool
     {
-        $porteFeuille = $this->findByUtilisateurId($utilisateurId);
-        return $porteFeuille ? $porteFeuille['solde'] : null;
+        $portefeuille = $this->getByUtilisateurId($utilisateurId);
+        if ($portefeuille === null || $portefeuille['solde'] < $montant) {
+            return false;
+        }
+        return $this->update($portefeuille['id'], [
+            'solde' => $portefeuille['solde'] - $montant,
+        ]);
     }
 }

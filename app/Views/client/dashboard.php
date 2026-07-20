@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon solde</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<?= $this->include('partials/client_nav') ?>
+<div class="container">
+    <?= $this->include('partials/flash') ?>
+    <div class="card">
+        <div class="card-body">
+            <h1 class="card-title">Solde actuel</h1>
+            <p class="display-5"><?= number_format($solde, 0, ',', ' ') ?> Ar</p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

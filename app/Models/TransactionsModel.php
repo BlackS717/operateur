@@ -12,7 +12,9 @@ class TransactionsModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['destinataireId', 'typetransactionId', 'montant', 'frais'];
+    protected $allowedFields    = ['utilisateurId', 'destinataireId', 'typeTransactionId', 'montant', 'frais'];
+
+
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -44,14 +46,23 @@ class TransactionsModel extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-    public function addTransaction($destinataireId, $typetransactionId, $montant, $frais)
+    public function getHistorique(int $utilisateurId): array
     {
-        $data = [
-            'destinataireId' => $destinataireId,
-            'typetransactionId' => $typetransactionId,
-            'montant' => $montant,
-            'frais' => $frais,
-        ];
-        return $this->insert($data);
+        return $this->select('transactions.*, typeTransaction.nom as typeNom')
+            ->join('typeTransaction', 'typeTransaction.id = transactions.typeTransactionId')
+            ->groupStart()
+                ->where('transactions.utilisateurId', $utilisateurId)
+                ->orWhere('transactions.destinataireId', $utilisateurId)
+            ->groupEnd()
+            ->orderBy('transactions.dateTransaction', 'DESC')
+            ->findAll();
+    }
+
+    public function getTotalFraisParType(): array
+    {
+        return $this->select('typeTransaction.nom as typeNom, SUM(transactions.frais) as total, COUNT(transactions.id) as nombre')
+            ->join('typeTransaction', 'typeTransaction.id = transactions.typeTransactionId')
+            ->groupBy('transactions.typeTransactionId')
+            ->findAll();
     }
 }

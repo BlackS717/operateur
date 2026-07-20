@@ -12,7 +12,7 @@ class PrefixModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = [];
+    protected $allowedFields    = ['nom'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

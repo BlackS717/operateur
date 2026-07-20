@@ -4,6 +4,7 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
+
 class UtilisateurModel extends Model
 {
     protected $table            = 'utilisateur';
@@ -45,9 +46,21 @@ class UtilisateurModel extends Model
 
     public function register(string $numero): ?array
     {
-        return ['id' => $this->insert([
-            'numero' => $numero,
-            'roleId' => 2
-        ], true)];
+        $db = \Config\Database::connect();
+        $db->transStart();
+
+        $id = $this->insert([
+            'numero' => $numero
+        ], true);
+
+        $porteFeuilleModel = new PorteFeuilleModel();
+        $porteFeuilleModel->insert([
+            'utilisateurId' => $id,
+            'solde' => 0,
+        ]);
+
+        $db->transComplete();
+
+        return $this->find($id);
     }
 }
