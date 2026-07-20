@@ -16,6 +16,9 @@ class Createtransactions extends Migration
             'utilisateurId' => [
                 'type' => 'INTEGER',
             ],
+            'destinataireId' => [
+                'type' => 'INTEGER',
+            ],
             'typeTransactionId' => [
                 'type' => 'INTEGER',
             ],
@@ -49,11 +52,11 @@ class Createtransactions extends Migration
             'CASCADE'
         );
 
-        $this->forge->createTable('transaction');
+        $this->forge->createTable('transactions');
     }
 
     public function down()
     {
-        $this->forge->dropTable('transaction');
+        $this->forge->dropTable('transactions');
     }
 }
