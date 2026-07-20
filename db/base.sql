@@ -1,38 +1,30 @@
-create database operateur;
-use operateur;
-
-create table utilisateur (
-    id int primary key auto_increment,
-    numero BIGINT,
-    date_creation timestamp default current_timestamp
+PRAGMA journal_mode = WAL;
+PRAGMA foreign_keys = ON;
+CREATE TABLE utilisateur (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    numero TEXT NOT NULL UNIQUE,
+    date_creation TEXT NOT NULL DEFAULT (datetime('now'))
 );
-
-create table porte_feuille(
-    id int auto_increment primary key,
-    id_utilisateur int primary key,
-    solde decimal(10,2) default 0
+CREATE TABLE porte_feuille (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    utilisateur_id INTEGER NOT NULL UNIQUE REFERENCES utilisateur(id) ON DELETE CASCADE,
+    solde REAL NOT NULL DEFAULT 0
 );
-
-create table type_transaction(
-    id int auto_increment primary key,
-    nom varchar(50) not null,
+CREATE TABLE type_transaction (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nom TEXT NOT NULL UNIQUE
 );
-
-
-create table frais(
-    id int auto_increment primary key,
-    minimum decimal(10,2) ,
-    maximum decimal(10,2) not null,
-    valeur decimal(10,2) not null,
+CREATE TABLE frais (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    minimum REAL,
+    maximum REAL NOT NULL,
+    valeur REAL NOT NULL
 );
-
 CREATE TABLE transaction (
-    id int auto_increment primary key,
-    id_utilisateur int,
-    id_type_transaction int,
-    montant decimal(10,2) not null,
-    frais decimal(10,2) not null,
-    date_transaction timestamp default current_timestamp,
-    foreign key (id_utilisateur) references utilisateur(id),
-    foreign key (id_type_transaction) references type_transaction(id)
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    utilisateur_id INTEGER NOT NULL REFERENCES utilisateur(id),
+    type_transaction_id INTEGER NOT NULL REFERENCES type_transaction(id),
+    montant REAL NOT NULL,
+    frais REAL NOT NULL,
+    date_transaction TEXT NOT NULL DEFAULT (datetime('now'))
 );
