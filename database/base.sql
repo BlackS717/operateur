@@ -2,11 +2,20 @@
 
 PRAGMA journal_mode = WAL;
 PRAGMA foreign_keys = ON;
+
+create table role(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nom TEXT NOT NULL UNIQUE
+);
+
 CREATE TABLE utilisateur (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     numero TEXT NOT NULL UNIQUE,
-    dateCreation TEXT NOT NULL DEFAULT (datetime('now'))
+    dateCreation TEXT NOT NULL DEFAULT (datetime('now')),
+    roleId INTEGER REFERENCES role(id)
 );
+
+
 CREATE TABLE porteFeuille (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     utilisateurId INTEGER NOT NULL UNIQUE REFERENCES utilisateur(id) ON DELETE CASCADE,
@@ -29,4 +38,9 @@ CREATE TABLE transactions (
     montant REAL NOT NULL,
     frais REAL NOT NULL,
     dateTransaction TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+create table prefix(
+    id BIGINT PRIMARY KEY AUTOINCREMENT,
+    nom text NOT NULL UNIQUE
 );
