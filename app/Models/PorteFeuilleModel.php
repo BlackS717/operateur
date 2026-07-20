@@ -43,4 +43,28 @@ class PorteFeuilleModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+    public function findByUtilisateurId($utilisateurId)
+    {
+        return $this->where('utilisateurId', $utilisateurId)->first();
+    }
+
+    public function updateSolde($utilisateurId, $newSolde)
+    {
+        return $this->where('utilisateurId', $utilisateurId)->set('solde', $newSolde)->update();
+    }
+
+    public function createPorteFeuille($utilisateurId, $solde = 0)
+    {
+        return $this->insert([
+            'utilisateurId' => $utilisateurId,
+            'solde' => $solde
+        ]);
+    }
+
+    public function getSoldeByUtilisateurId($utilisateurId)
+    {
+        $porteFeuille = $this->findByUtilisateurId($utilisateurId);
+        return $porteFeuille ? $porteFeuille['solde'] : null;
+    }
 }

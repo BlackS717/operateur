@@ -12,7 +12,7 @@ class TransactionsModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['destinataireId','typetransactionId','montant','frais'];
+    protected $allowedFields    = ['destinataireId', 'typetransactionId', 'montant', 'frais'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -43,4 +43,15 @@ class TransactionsModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+    public function addTransaction($destinataireId, $typetransactionId, $montant, $frais)
+    {
+        $data = [
+            'destinataireId' => $destinataireId,
+            'typetransactionId' => $typetransactionId,
+            'montant' => $montant,
+            'frais' => $frais,
+        ];
+        return $this->insert($data);
+    }
 }

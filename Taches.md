@@ -20,7 +20,7 @@
 - [x] Mettre en place la connexion automatique avec le numéro de téléphone.
 - [x] Supprimer l'inscription préalable.
 - [x] Créer automatiquement un compte client lors de la première connexion.
-- [ ] Consulter le solde.
+- [x] Consulter le solde.
 - [ ] Effectuer un dépôt (simulation automatique).
 - [ ] Effectuer un retrait (simulation automatique).
 - [ ] Effectuer un transfert.

@@ -12,7 +12,7 @@ class UtilisateurModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = [];
+    protected $allowedFields    = ['numero'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -46,7 +46,8 @@ class UtilisateurModel extends Model
     public function register(string $numero): ?array
     {
         return ['id' => $this->insert([
-            'numero' => $numero
+            'numero' => $numero,
+            'roleId' => 2
         ], true)];
     }
 }
