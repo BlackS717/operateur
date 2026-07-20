@@ -17,15 +17,24 @@
             <input type="text" name="nom" class="form-control" placeholder="Ex: 033" pattern="[0-9]{2,4}" maxlength="4" required value="<?= old('nom') ?>">
         </div>
         <div class="col-auto">
+            <select name="operateurId" class="form-select" required>
+                <option value="">-- Operateur --</option>
+                <?php foreach ($operateurs as $o): ?>
+                    <option value="<?= $o['id'] ?>" <?= old('operateurId') == $o['id'] ? 'selected' : '' ?>><?= esc($o['labelle']) ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+        <div class="col-auto">
             <button type="submit" class="btn btn-primary">Ajouter</button>
         </div>
     </form>
     <table class="table table-striped">
-        <thead><tr><th>Prefixe</th><th></th></tr></thead>
+        <thead><tr><th>Prefixe</th><th>Operateur</th><th></th></tr></thead>
         <tbody>
         <?php foreach ($prefixes as $p): ?>
             <tr>
                 <td><?= esc($p['nom']) ?></td>
+                <td><?= esc($p['operateurLabelle'] ?? 'N/A') ?></td>
                 <td><a class="btn btn-sm btn-danger" href="<?= base_url('/admin/prefixes/delete/' . $p['id']) ?>">Supprimer</a></td>
             </tr>
         <?php endforeach; ?>

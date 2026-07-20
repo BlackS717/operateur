@@ -26,6 +26,7 @@ class OperateurController extends BaseController
     {
         return view('operateur/prefixes', [
             'prefixes' => $this->operateurService->getAllPrefixes(),
+            'operateurs' => $this->operateurService->getAllOperateurs(),
         ]);
     }
 
@@ -40,12 +41,23 @@ class OperateurController extends BaseController
                     'is_unique' => 'Ce prefixe existe deja.',
                 ],
             ],
+            'operateurId' => [
+                'rules' => 'required|numeric|is_not_unique[operateur.id]',
+                'errors' => [
+                    'required' => "L'operateur est obligatoire.",
+                    'numeric' => "L'operateur selectionne est invalide.",
+                    'is_not_unique' => "L'operateur selectionne n'existe pas.",
+                ],
+            ],
         ];
         if (!$this->validate($rules)) {
             return redirect()->back()->withInput()->with('reports', $this->validator->getErrors());
         }
 
-        $result = $this->operateurService->addPrefix($this->request->getPost('nom'));
+        $result = $this->operateurService->addPrefix(
+            $this->request->getPost('nom'),
+            (int) $this->request->getPost('operateurId')
+        );
         return redirect()->to('/admin/prefixes')->with('reports', [$result['message']]);
     }
 

@@ -43,11 +43,22 @@ class OperateurService
         return $operateur;
     }
 
+    // Operateurs
+
+    public function getAllOperateurs(): array
+    {
+        return $this->operateurModel->orderBy('labelle', 'ASC')->findAll();
+    }
+
     // Prefixes
 
     public function getAllPrefixes(): array
     {
-        return $this->prefixModel->orderBy('nom', 'ASC')->findAll();
+        return $this->prefixModel
+            ->select('prefix.*, operateur.labelle as operateurLabelle')
+            ->join('operateur', 'operateur.id = prefix.operateurId', 'left')
+            ->orderBy('nom', 'ASC')
+            ->findAll();
     }
 
     public function getPrefixById(int $id): ?array
@@ -56,12 +67,15 @@ class OperateurService
     }
 
     /** @return array{success: bool, message: string} */
-    public function addPrefix(string $nom): array
+    public function addPrefix(string $nom, int $operateurId): array
     {
         if ($this->prefixModel->where('nom', $nom)->first()) {
             return ['success' => false, 'message' => 'Ce prefixe existe deja.'];
         }
-        $this->prefixModel->insert(['nom' => $nom]);
+        if (!$this->operateurModel->find($operateurId)) {
+            return ['success' => false, 'message' => "L'operateur selectionne est introuvable."];
+        }
+        $this->prefixModel->insert(['nom' => $nom, 'operateurId' => $operateurId]);
         return ['success' => true, 'message' => 'Prefixe ajoute.'];
     }
 
