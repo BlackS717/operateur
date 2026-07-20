@@ -21,21 +21,21 @@
 - [x] Supprimer l'inscription préalable.
 - [x] Créer automatiquement un compte client lors de la première connexion.
 - [x] Consulter le solde.
-- [ ] Effectuer un dépôt (simulation automatique).
-- [ ] Effectuer un retrait (simulation automatique).
-- [ ] Effectuer un transfert.
-- [ ] Consulter l'historique des opérations.
+- [x] Effectuer un dépôt (simulation automatique).
+- [x] Effectuer un retrait (simulation automatique).
+- [x] Effectuer un transfert.
+- [x] Consulter l'historique des opérations.
 
 ## Backend ```ETU 4316```
-- [ ] Développer les API pour l'authentification.
-- [ ] Développer les API des opérations (dépôt, retrait, transfert).
-- [ ] Implémenter le calcul automatique des frais.
-- [ ] Valider les données et gérer les erreurs.
-- [ ] Journaliser les opérations.
+- [x] Développer les API pour l'authentification.
+- [x] Développer les API des opérations (dépôt, retrait, transfert).
+- [x] Implémenter le calcul automatique des frais.
+- [x] Valider les données et gérer les erreurs.
+- [x] Journaliser les opérations.
 
 ## Tests 
-- [ ] Tester les opérations de dépôt.
-- [ ] Tester les opérations de retrait.
-- [ ] Tester les opérations de transfert.
-- [ ] Vérifier le calcul des frais.
-- [ ] Vérifier les historiques et les soldes.
+- [x] Tester les opérations de dépôt.
+- [x] Tester les opérations de retrait.
+- [x] Tester les opérations de transfert.
+- [x] Vérifier le calcul des frais.
+- [x] Vérifier les historiques et les soldes.
