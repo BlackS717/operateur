@@ -9,6 +9,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call('RoleSeeder');
+        $this->call('PrefixSeeder');
         $this->call('UtilisateurSeeder');
         $this->call('FraisSeeder');
     }

@@ -14,3 +14,14 @@ insert into frais(minimum, maximum, valeur) values
 (250001, 500000, 1500),
 (500001, 1000000, 2500),
 (1000001, 2000000, 5000);
+
+insert into prefix(nom) values
+('032'),
+('033'),
+('034'),
+('037')
+('038');
+
+insert into role(nom) values
+('admin'),
+('utilisateur');
