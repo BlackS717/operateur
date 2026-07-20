@@ -3,7 +3,7 @@
 # v1
 
 ## Initialisation du projet
-- [ ] Concevoir le schéma de la base de données.
+- [ ] Concevoir le schéma de la base de données. ```ETU 3893```
 - [ ] Créer les migrations de la base de données.
 - [ ] Mettre en place les modèles.
 - [ ] Préparer les données de test (seeders).
