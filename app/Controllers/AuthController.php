@@ -11,7 +11,8 @@ class AuthController extends BaseController
 {
 
     protected $authService;
-    public function __construct(){
+    public function __construct()
+    {
         $this->authService = service('authService');
     }
     public function index(): string
@@ -19,35 +20,36 @@ class AuthController extends BaseController
         return view('auth/login');
     }
 
-    public function buildNumberValidation(): string{
+    public function buildNumberValidation(): string
+    {
         $validNumbers = $this->authService->getAllPrefixes();
 
 
         $str = "required|numeric|regex_match[/^(";
-        $str.= implode('|', $validNumbers);
-        $str.= ")/]";
+        $str .= implode('|', $validNumbers);
+        $str .= ")/]";
         return $str;
     }
-    
-    public function authenticate(): RedirectResponse{
+
+    public function authenticate(): RedirectResponse
+    {
 
         $rules = [
             'phone' => $this->buildNumberValidation(),
         ];
 
-        if(!$this->validate($rules)){
+        if (!$this->validate($rules)) {
             return redirect()->back()->withInput()->with('reports', $this->validator->getErrors());
         }
 
-        
-
-
-
-
-
-
-
-
-        return redirect()->back()->withInput()->with('reports', ['phone' => 'login successful']);
+        $user = $this->authService->authenticate($this->request->getPost('phone'));
+        if (!$user) {
+            $user = $this->authService->register($this->request->getPost('phone'));
+            }
+        session()->set('userId', $user['id']);
+        if ($user['roleId'] == 1) {
+            return redirect()->to('/admin');
+        }
+        return redirect()->to('/user');
     }
 }

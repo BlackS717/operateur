@@ -3,10 +3,10 @@
 # v1
 
 ## Initialisation du projet ```ETU 3893```
-- [ ] Concevoir le schéma de la base de données. 
-- [ ] Créer les migrations de la base de données.
-- [ ] Mettre en place les modèles.
-- [ ] Préparer les données de test (seeders).
+- [x] Concevoir le schéma de la base de données. 
+- [x] Créer les migrations de la base de données.
+- [x] Mettre en place les modèles.
+- [x] Préparer les données de test (seeders).
 
 ## Côté opérateur ```ETU 4316```
 - [ ] Configurer les préfixes valides de l'opérateur (ex. : 033, 037).
@@ -17,9 +17,9 @@
 - [ ] Consulter la situation des comptes clients.
 
 ## Côté client ```ETU 3893```
-- [ ] Mettre en place la connexion automatique avec le numéro de téléphone.
-- [ ] Supprimer l'inscription préalable.
-- [ ] Créer automatiquement un compte client lors de la première connexion.
+- [x] Mettre en place la connexion automatique avec le numéro de téléphone.
+- [x] Supprimer l'inscription préalable.
+- [x] Créer automatiquement un compte client lors de la première connexion.
 - [ ] Consulter le solde.
 - [ ] Effectuer un dépôt (simulation automatique).
 - [ ] Effectuer un retrait (simulation automatique).

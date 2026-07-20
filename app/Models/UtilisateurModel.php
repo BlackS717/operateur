@@ -38,5 +38,15 @@ class UtilisateurModel extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-    
+    public function getByNumero(string $numero): ?array
+    {
+        return $this->where('numero', $numero)->first();
+    }
+
+    public function register(string $numero): ?array
+    {
+        return ['id' => $this->insert([
+            'numero' => $numero
+        ], true)];
+    }
 }
