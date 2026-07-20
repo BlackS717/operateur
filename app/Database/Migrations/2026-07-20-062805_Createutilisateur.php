@@ -4,28 +4,39 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class Createutilisateur extends Migration
+class CreateUtilisateur extends Migration
 {
     public function up()
     {
         $this->forge->addField([
             'id' => [
                 'type'           => 'INTEGER',
-                'constraint'     => 11,
                 'auto_increment' => true,
             ],
             'numero' => [
-                'type'       => 'TEXT',
-                'null'       => false,
+                'type' => 'TEXT',
+                'null' => false,
             ],
-            'date_creation' => [
+            'dateCreation' => [
                 'type'    => 'TEXT',
                 'default' => 'CURRENT_TIMESTAMP',
+            ],
+            'roleId' => [
+                'type' => 'INTEGER',
+                'null' => true,
             ],
         ]);
 
         $this->forge->addKey('id', true);
         $this->forge->addUniqueKey('numero');
+
+        $this->forge->addForeignKey(
+            'roleId',
+            'role',
+            'id',
+            'CASCADE',
+            'SET NULL'
+        );
 
         $this->forge->createTable('utilisateur');
     }

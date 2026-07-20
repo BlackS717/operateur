@@ -10,13 +10,16 @@ class UtilisateurSeeder extends Seeder
     {
         $data = [
             [
-                'numero' => '0348041388'
+                'numero' => '0348041388',
+                'roleId' => 1
             ],
             [
-                'numero' => '0389299922'
+                'numero' => '0389299922',
+                'roleId' => 2
             ],
             [
-                'numero' => '0331256792'
+                'numero' => '0331256792',
+                'roleId' => 2
             ]
         ];
 
