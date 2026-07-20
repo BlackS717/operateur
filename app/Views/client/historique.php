@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Historique</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <?= $this->include('partials/styles') ?>
 </head>
 <body>
 <?= $this->include('partials/client_nav') ?>
@@ -24,7 +25,7 @@
         <tbody>
         <?php foreach ($transactions as $t): ?>
             <tr>
-                <td><?= esc($t['dateTransaction']) ?></td>
+                <td><?= formatDateFr($t['dateTransaction']) ?></td>
                 <td><?= esc($t['typeNom']) ?></td>
                 <td><?= (int) $t['utilisateurId'] === $userId ? 'Envoye' : 'Recu' ?></td>
                 <td><?= number_format($t['montant'], 0, ',', ' ') ?> Ar</td>

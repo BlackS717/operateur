@@ -13,3 +13,22 @@
  *
  * @see: https://codeigniter.com/user_guide/extending/common.html
  */
+
+if (!function_exists('formatDateFr')) {
+    /**
+     * Formate une date/heure SQLite (ou un timestamp UNIX) en date lisible fr (jj/mm/aaaa hh:mm).
+     */
+    function formatDateFr(?string $value): string
+    {
+        if (empty($value)) {
+            return '-';
+        }
+
+        $timestamp = is_numeric($value) ? (int) $value : strtotime($value);
+        if ($timestamp === false || $timestamp === 0) {
+            return esc($value);
+        }
+
+        return date('d/m/Y H:i', $timestamp);
+    }
+}

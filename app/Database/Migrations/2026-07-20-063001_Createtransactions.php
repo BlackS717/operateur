@@ -3,6 +3,7 @@
 namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
+use CodeIgniter\Database\RawSql;
 
 class Createtransactions extends Migration
 {
@@ -30,7 +31,8 @@ class Createtransactions extends Migration
             ],
             'dateTransaction' => [
                 'type'    => 'TEXT',
-                'default' => 'CURRENT_TIMESTAMP',
+                'null'    => false,
+                'default' => new RawSql("(datetime('now'))"),
             ],
         ]);
 

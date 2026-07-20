@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand navbar-dark bg-primary mb-4">
+<nav class="navbar navbar-expand navbar-dark app-navbar mb-4">
     <div class="container">
         <span class="navbar-brand">Mobile Money</span>
         <div class="navbar-nav">

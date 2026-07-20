@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Comptes clients</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <?= $this->include('partials/styles') ?>
 </head>
 <body>
 <?= $this->include('partials/operateur_nav') ?>
@@ -17,7 +18,7 @@
         <?php foreach ($clients as $c): ?>
             <tr>
                 <td><?= esc($c['numero']) ?></td>
-                <td><?= esc($c['dateCreation']) ?></td>
+                <td><?= formatDateFr($c['dateCreation']) ?></td>
                 <td><?= number_format($c['solde'] ?? 0, 0, ',', ' ') ?> Ar</td>
             </tr>
         <?php endforeach; ?>

@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand navbar-dark bg-dark mb-4">
+<nav class="navbar navbar-expand navbar-dark app-navbar mb-4">
     <div class="container">
         <span class="navbar-brand">Operateur</span>
         <div class="navbar-nav">

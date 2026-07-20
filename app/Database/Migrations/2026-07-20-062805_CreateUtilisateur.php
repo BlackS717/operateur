@@ -3,6 +3,7 @@
 namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
+use CodeIgniter\Database\RawSql;
 
 class CreateUtilisateur extends Migration
 {
@@ -19,7 +20,8 @@ class CreateUtilisateur extends Migration
             ],
             'dateCreation' => [
                 'type'    => 'TEXT',
-                'default' => 'CURRENT_TIMESTAMP',
+                'null'    => false,
+                'default' => new RawSql("(datetime('now'))"),
             ],
         ]);
 
