@@ -13,5 +13,7 @@ class ClientService {
         return $this->clientModel->findAll();
     }
 
-    public 
+    public function getClientById($id) {
+        return $this->clientModel->find($id);
+    }
 }
