@@ -151,51 +151,130 @@ class ClientService
     }
 
     /**
-     * @return array{success: bool, message: string}
+     * @deprecated Use transfertMultiple() instead.
      */
     public function transfert(int $utilisateurId, string $numeroDestinataire, float $montant): array
     {
-        if ($montant <= 0) {
+        return $this->transfertMultiple($utilisateurId, [$numeroDestinataire], $montant, true);
+    }
+
+    /**
+     * Transfert vers un ou plusieurs destinataires.
+     *
+     * @param int     $utilisateurId  Expéditeur
+     * @param array   $numeros        Liste des numéros destinataires
+     * @param float   $montantTotal   Montant total à partager entre les destinataires
+     * @param bool    $inclureFrais   Si true, les frais sont ajoutés au débit (expéditeur paie les frais)
+     *                                Si false, les frais sont déduits du montant envoyé à chaque destinataire
+     * @return array{success: bool, message: string}
+     */
+    public function transfertMultiple(int $utilisateurId, array $numeros, float $montantTotal, bool $inclureFrais): array
+    {
+        if ($montantTotal <= 0) {
             return ['success' => false, 'message' => 'Le montant doit etre positif.'];
         }
 
-        $destinataire = $this->clientModel->getByNumero($numeroDestinataire);
-        if (!$destinataire) {
-            return ['success' => false, 'message' => 'Destinataire introuvable.'];
+        $nbDestinataires = count($numeros);
+        if ($nbDestinataires === 0) {
+            return ['success' => false, 'message' => 'Aucun destinataire fourni.'];
         }
-        if ((int) $destinataire['id'] === $utilisateurId) {
-            return ['success' => false, 'message' => 'Impossible de se transferer de l\'argent a soi-meme.'];
+
+        // Vérifier tous les destinataires et les récupérer
+        $destinataires = [];
+        foreach ($numeros as $numero) {
+            $numero = trim($numero);
+            if (!preg_match('/^[0-9]{10}$/', $numero)) {
+                return ['success' => false, 'message' => "Le numero '$numero' n'est pas un numero valide (10 chiffres)."];
+            }
+            $dest = $this->clientModel->getByNumero($numero);
+            if (!$dest) {
+                return ['success' => false, 'message' => "Destinataire '$numero' introuvable."];
+            }
+            if ((int) $dest['id'] === $utilisateurId) {
+                return ['success' => false, 'message' => 'Impossible de se transferer de l\'argent a soi-meme.'];
+            }
+            $destinataires[] = $dest;
+        }
+
+        // Montant par destinataire
+        $montantParDest = $montantTotal / $nbDestinataires;
+        if ($montantParDest < 100) {
+            return ['success' => false, 'message' => "Le montant par destinataire ($montantParDest Ar) est inferieur au minimum de 100 Ar."];
         }
 
         $typeId = $this->getTypeIdByNom('Transfert');
-        $frais = $this->calculerFrais($typeId, $montant);
-        $commissionInter = $this->calculerCommissionInterOperateur($utilisateurId, (int) $destinataire['id'], $montant);
-        $total = $montant + $frais + $commissionInter;
 
-        if ($this->getSolde($utilisateurId) < $total) {
-            $msg = 'Solde insuffisant (montant + frais de ' . number_format($frais, 0, ',', ' ') . ' Ar';
-            if ($commissionInter > 0) {
-                $msg .= ' + commission inter-operateur de ' . number_format($commissionInter, 0, ',', ' ') . ' Ar';
+        // Calculer les frais et commissions pour chaque destinataire
+        $totalFrais = 0.0;
+        $totalCommissions = 0.0;
+        $details = [];
+
+        foreach ($destinataires as $dest) {
+            $frais = $this->calculerFrais($typeId, $montantParDest);
+            $commissionInter = $this->calculerCommissionInterOperateur($utilisateurId, (int) $dest['id'], $montantParDest);
+
+            if ($inclureFrais) {
+                // L'expéditeur paie les frais en plus
+                $totalFrais += $frais;
+                $totalCommissions += $commissionInter;
+                $montantEnvoye = $montantParDest;
+            } else {
+                // Les frais sont déduits du montant envoyé
+                $totalFrais += $frais;
+                $totalCommissions += $commissionInter;
+                $montantEnvoye = $montantParDest - $frais;
+                if ($montantEnvoye <= 0) {
+                    return ['success' => false, 'message' => "Les frais de $frais Ar depassent le montant de $montantParDest Ar pour le destinataire {$dest['numero']}."];
+                }
+            }
+
+            $details[] = [
+                'destinataire' => $dest,
+                'montantEnvoye' => $montantEnvoye,
+                'frais' => $frais,
+                'commissionInter' => $commissionInter,
+            ];
+        }
+
+        // Montant total à débiter
+        $totalADebiter = $montantTotal + $totalFrais + $totalCommissions;
+
+        if ($this->getSolde($utilisateurId) < $totalADebiter) {
+            $msg = 'Solde insuffisant (montant total ' . number_format($montantTotal, 0, ',', ' ') . ' Ar';
+            if ($totalFrais > 0) {
+                $msg .= ' + frais de ' . number_format($totalFrais, 0, ',', ' ') . ' Ar';
+            }
+            if ($totalCommissions > 0) {
+                $msg .= ' + commission inter-operateur de ' . number_format($totalCommissions, 0, ',', ' ') . ' Ar';
             }
             $msg .= ').';
             return ['success' => false, 'message' => $msg];
         }
 
-        $this->porteFeuilleModel->debiter($utilisateurId, $total);
-        $this->porteFeuilleModel->crediter((int) $destinataire['id'], $montant);
+        // Débiter l'expéditeur une seule fois pour le total
+        $this->porteFeuilleModel->debiter($utilisateurId, $totalADebiter);
 
-        $this->transactionsModel->insert([
-            'utilisateurId' => $utilisateurId,
-            'destinataireId' => $destinataire['id'],
-            'typeTransactionId' => $typeId,
-            'montant' => $montant,
-            'frais' => $frais,
-        ]);
+        // Exécuter les transferts vers chaque destinataire
+        foreach ($details as $d) {
+            $this->porteFeuilleModel->crediter((int) $d['destinataire']['id'], $d['montantEnvoye']);
+
+            $this->transactionsModel->insert([
+                'utilisateurId' => $utilisateurId,
+                'destinataireId' => $d['destinataire']['id'],
+                'typeTransactionId' => $typeId,
+                'montant' => $d['montantEnvoye'],
+                'frais' => $d['frais'],
+            ]);
+        }
 
         $message = 'Transfert effectue avec succes.';
-        if ($commissionInter > 0) {
-            $message .= ' (Commission inter-operateur de ' . number_format($commissionInter, 0, ',', ' ') . ' Ar appliquee.)';
+        if ($nbDestinataires > 1) {
+            $message .= " $nbDestinataires destinataires servis.";
         }
+        if ($totalCommissions > 0) {
+            $message .= ' (Commission inter-operateur de ' . number_format($totalCommissions, 0, ',', ' ') . ' Ar appliquee.)';
+        }
+
         return ['success' => true, 'message' => $message];
     }
 

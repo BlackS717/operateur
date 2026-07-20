@@ -178,14 +178,44 @@ class OperateurService
 
     public function getSituationGains(): array
     {
-        $totaux = $this->transactionsModel->getTotalFraisParType();
-        $totalGeneral = 0.0;
-        foreach ($totaux as $ligne) {
-            $totalGeneral += (float) $ligne['total'];
+        $fraisSepares = $this->transactionsModel->getFraisParTypeAvecSeparation();
+        $commissionsDues = $this->transactionsModel->getCommissionsDues();
+
+        // Structurer les frais par type avec séparation intra/inter
+        $fraisIntra = [];
+        $fraisInter = [];
+        $totalIntra = 0.0;
+        $totalInter = 0.0;
+
+        foreach ($fraisSepares as $ligne) {
+            $item = [
+                'typeNom' => $ligne['typeNom'],
+                'nombre' => (int) $ligne['nombre'],
+                'total' => (float) $ligne['total'],
+            ];
+            if ($ligne['categorie'] === 'intra') {
+                $fraisIntra[] = $item;
+                $totalIntra += $item['total'];
+            } else {
+                $fraisInter[] = $item;
+                $totalInter += $item['total'];
+            }
         }
+
+        // Total des commissions dues aux operateurs destinataires
+        $totalCommissions = 0.0;
+        foreach ($commissionsDues as $c) {
+            $totalCommissions += (float) $c['montantCommission'];
+        }
+
         return [
-            'parType' => $totaux,
-            'total' => $totalGeneral,
+            'fraisIntra' => $fraisIntra,
+            'fraisInter' => $fraisInter,
+            'totalIntra' => $totalIntra,
+            'totalInter' => $totalInter,
+            'totalGeneral' => $totalIntra + $totalInter,
+            'commissionsDues' => $commissionsDues,
+            'totalCommissions' => $totalCommissions,
         ];
     }
 

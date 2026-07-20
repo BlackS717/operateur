@@ -79,25 +79,41 @@ class ClientController extends BaseController
 
     public function transfertSubmit()
     {
-        $rules = array_merge($this->montantRules(), [
-            'numero' => [
-                'rules' => 'required|numeric|exact_length[10]',
+        $rules = [
+            'numeros' => [
+                'rules' => 'required',
                 'errors' => [
-                    'required' => 'Le numero du destinataire est obligatoire.',
-                    'numeric' => 'Le numero du destinataire ne doit contenir que des chiffres.',
-                    'exact_length' => 'Le numero du destinataire doit contenir 10 chiffres.',
+                    'required' => 'Le(s) numero(s) du/des destinataire(s) est/sont obligatoire(s).',
                 ],
             ],
-        ]);
+            'montant' => [
+                'rules' => 'required|numeric|greater_than_equal_to[100]|less_than_equal_to[2000000]',
+                'errors' => [
+                    'required' => 'Le montant est obligatoire.',
+                    'numeric' => 'Le montant doit etre un nombre.',
+                    'greater_than_equal_to' => 'Le montant minimum est de 100 Ar.',
+                    'less_than_equal_to' => 'Le montant maximum est de 2 000 000 Ar.',
+                ],
+            ],
+        ];
 
         if (!$this->validate($rules)) {
             return redirect()->back()->withInput()->with('reports', $this->validator->getErrors());
         }
 
-        $result = $this->clientService->transfert(
+        // Parser les numeros (separes par des virgules)
+        $numerosRaw = $this->request->getPost('numeros');
+        $numeros = array_map('trim', explode(',', $numerosRaw));
+        $numeros = array_filter($numeros, fn($n) => $n !== '');
+
+        $montantTotal = (float) $this->request->getPost('montant');
+        $inclureFrais = $this->request->getPost('inclureFrais') === '1';
+
+        $result = $this->clientService->transfertMultiple(
             $this->userId(),
-            $this->request->getPost('numero'),
-            (float) $this->request->getPost('montant')
+            $numeros,
+            $montantTotal,
+            $inclureFrais
         );
         return redirect()->to('/user')->with('reports', [$result['message']]);
     }

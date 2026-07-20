@@ -58,11 +58,70 @@ class TransactionsModel extends Model
             ->findAll();
     }
 
+    /**
+     * Frais par type de transaction (global).
+     */
     public function getTotalFraisParType(): array
     {
         return $this->select('typeTransaction.nom as typeNom, SUM(transactions.frais) as total, COUNT(transactions.id) as nombre')
             ->join('typeTransaction', 'typeTransaction.id = transactions.typeTransactionId')
             ->groupBy('transactions.typeTransactionId')
             ->findAll();
+    }
+
+    /**
+     * Frais par type de transaction, séparés entre transactions
+     * intra-operateur (même operateur) et inter-operateurs (operateurs differents).
+     */
+    public function getFraisParTypeAvecSeparation(): array
+    {
+        $sql = "
+            SELECT
+                t.typeTransactionId,
+                tp.nom as typeNom,
+                CASE WHEN pfSource.operateurId = pfDest.operateurId THEN 'intra' ELSE 'inter' END as categorie,
+                SUM(t.frais) as total,
+                COUNT(t.id) as nombre
+            FROM transactions t
+            JOIN typeTransaction tp ON tp.id = t.typeTransactionId
+            LEFT JOIN porteFeuille pfSource ON pfSource.utilisateurId = t.utilisateurId
+            LEFT JOIN porteFeuille pfDest ON pfDest.utilisateurId = t.destinataireId
+            GROUP BY t.typeTransactionId, categorie
+            ORDER BY tp.nom, categorie
+        ";
+        $query = $this->db->query($sql);
+        return $query->getResultArray();
+    }
+
+    /**
+     * Calcule les commissions inter-operateurs dues à chaque operateur
+     * pour les transferts. Retourne un tableau avec les colonnes :
+     * sourceOperateurId, sourceLabelle, destinataireOperateurId, destinataireLabelle, montantCommission
+     */
+    public function getCommissionsDues(): array
+    {
+        $sql = "
+            SELECT
+                pfSource.operateurId as sourceOperateurId,
+                src.labelle as sourceLabelle,
+                pfDest.operateurId as destinataireOperateurId,
+                dst.labelle as destinataireLabelle,
+                SUM(t.montant * c.pourcentage / 100.0) as montantCommission,
+                COUNT(t.id) as nombreTransferts
+            FROM transactions t
+            JOIN typeTransaction tp ON tp.id = t.typeTransactionId AND tp.nom = 'Transfert'
+            LEFT JOIN porteFeuille pfSource ON pfSource.utilisateurId = t.utilisateurId
+            LEFT JOIN porteFeuille pfDest ON pfDest.utilisateurId = t.destinataireId
+            LEFT JOIN operateur src ON src.id = pfSource.operateurId
+            LEFT JOIN operateur dst ON dst.id = pfDest.operateurId
+            LEFT JOIN commission c ON c.source = pfSource.operateurId AND c.destinataire = pfDest.operateurId
+            WHERE pfSource.operateurId IS NOT NULL
+              AND pfDest.operateurId IS NOT NULL
+              AND pfSource.operateurId != pfDest.operateurId
+            GROUP BY pfSource.operateurId, pfDest.operateurId
+            ORDER BY src.labelle, dst.labelle
+        ";
+        $query = $this->db->query($sql);
+        return $query->getResultArray();
     }
 }
