@@ -12,7 +12,7 @@ class PorteFeuilleModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['solde'];
+    protected $allowedFields    = ['utilisateurId', 'solde'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -43,4 +43,31 @@ class PorteFeuilleModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+    public function getByUtilisateurId(int $utilisateurId): ?array
+    {
+        return $this->where('utilisateurId', $utilisateurId)->first();
+    }
+
+    public function crediter(int $utilisateurId, float $montant): bool
+    {
+        $portefeuille = $this->getByUtilisateurId($utilisateurId);
+        if ($portefeuille === null) {
+            return false;
+        }
+        return $this->update($portefeuille['id'], [
+            'solde' => $portefeuille['solde'] + $montant,
+        ]);
+    }
+
+    public function debiter(int $utilisateurId, float $montant): bool
+    {
+        $portefeuille = $this->getByUtilisateurId($utilisateurId);
+        if ($portefeuille === null || $portefeuille['solde'] < $montant) {
+            return false;
+        }
+        return $this->update($portefeuille['id'], [
+            'solde' => $portefeuille['solde'] - $montant,
+        ]);
+    }
 }

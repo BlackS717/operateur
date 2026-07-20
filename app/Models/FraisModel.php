@@ -12,7 +12,7 @@ class FraisModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['minimum', 'maximum', 'valeur'];
+    protected $allowedFields    = ['minimum', 'maximum', 'valeur', 'typeTransactionId'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -43,4 +43,34 @@ class FraisModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+    public function getFraisPourMontant(int $typeTransactionId, float $montant): ?array
+    {
+        return $this->where('typeTransactionId', $typeTransactionId)
+            ->where('minimum <=', $montant)
+            ->where('maximum >=', $montant)
+            ->first();
+    }
+
+    public function getAllWithType(): array
+    {
+        return $this->select('frais.*, typeTransaction.nom as typeNom')
+            ->join('typeTransaction', 'typeTransaction.id = frais.typeTransactionId')
+            ->orderBy('typeTransaction.nom', 'ASC')
+            ->orderBy('frais.minimum', 'ASC')
+            ->findAll();
+    }
+
+    public function hasOverlap(int $typeTransactionId, float $minimum, float $maximum, ?int $excludeId = null): bool
+    {
+        $builder = $this->where('typeTransactionId', $typeTransactionId)
+            ->where('minimum <=', $maximum)
+            ->where('maximum >=', $minimum);
+
+        if ($excludeId !== null) {
+            $builder->where('id !=', $excludeId);
+        }
+
+        return $builder->countAllResults() > 0;
+    }
 }

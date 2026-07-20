@@ -45,8 +45,21 @@ class UtilisateurModel extends Model
 
     public function register(string $numero): ?array
     {
-        return ['id' => $this->insert([
+        $db = \Config\Database::connect();
+        $db->transStart();
+
+        $id = $this->insert([
             'numero' => $numero
-        ], true)];
+        ], true);
+
+        $porteFeuilleModel = new PorteFeuilleModel();
+        $porteFeuilleModel->insert([
+            'utilisateurId' => $id,
+            'solde' => 0,
+        ]);
+
+        $db->transComplete();
+
+        return $this->find($id);
     }
 }

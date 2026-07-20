@@ -17,7 +17,7 @@
 
     <form action="<?= base_url('/auth/login') ?>" method="post">
         <label for="username">Phone number:</label>
-        <input type="number" id="phone" name="phone" required value="<?= old('phone') ?>">
+        <input type="tel" id="phone" name="phone" inputmode="numeric" pattern="[0-9]{10}" maxlength="10" required value="<?= old('phone') ?>">
         <br>
         <button type="submit">Login</button>
     </form>

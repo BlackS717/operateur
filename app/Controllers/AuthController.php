@@ -20,20 +20,28 @@ class AuthController extends BaseController
         return view('auth/login');
     }
 
-    public function buildNumberValidation(): string
+    public function buildNumberValidation(): array
     {
         $validNumbers = $this->authService->getAllPrefixes();
 
-
-        $str = "required|numeric|regex_match[/^(";
-        for($i = 0; $i < count($validNumbers); $i++) {
-            $str .= $validNumbers[$i]['nom'];
+        $str = "required|numeric|exact_length[10]|regex_match[/^(";
+        for ($i = 0; $i < count($validNumbers); $i++) {
+            $str .= preg_quote($validNumbers[$i]['nom'], '/');
             if ($i < count($validNumbers) - 1) {
                 $str .= "|";
             }
         }
         $str .= ")/]";
-        return $str;
+
+        return [
+            'rules' => $str,
+            'errors' => [
+                'required' => 'Le numero de telephone est obligatoire.',
+                'numeric' => 'Le numero de telephone ne doit contenir que des chiffres.',
+                'exact_length' => 'Le numero de telephone doit contenir 10 chiffres.',
+                'regex_match' => "Ce prefixe n'est pas pris en charge par l'operateur.",
+            ],
+        ];
     }
 
     public function authenticate(): RedirectResponse
@@ -52,9 +60,16 @@ class AuthController extends BaseController
             $user = $this->authService->register($this->request->getPost('phone'));
             }
         session()->set('userId', $user['id']);
+        session()->set('roleId', $user['roleId']);
         if ($user['roleId'] == 1) {
             return redirect()->to('/admin');
         }
         return redirect()->to('/user');
+    }
+
+    public function logout(): RedirectResponse
+    {
+        session()->destroy();
+        return redirect()->to('/');
     }
 }
