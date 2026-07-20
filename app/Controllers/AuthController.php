@@ -5,16 +5,22 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use CodeIgniter\HTTP\RedirectResponse;
 use CodeIgniter\HTTP\ResponseInterface;
+use App\Services\AuthService;
 
 class AuthController extends BaseController
 {
+
+    protected $authService;
+    public function __construct(){
+        $this->authService = service('authService');
+    }
     public function index(): string
     {
         return view('auth/login');
     }
 
     public function buildNumberValidation(): string{
-        $validNumbers = ['033', '037'];
+        $validNumbers = $this->authService->getAllPrefixes();
 
 
         $str = "required|numeric|regex_match[/^(";

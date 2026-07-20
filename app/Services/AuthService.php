@@ -2,8 +2,19 @@
 
 namespace App\Services;
 
-class AuthService {
-    public function __construct(){
+use \App\Models\PrefixModel;
 
+class AuthService
+{
+    protected $prefixModel;
+    public function __construct()
+    {
+        $this->prefixModel = new PrefixModel();
+    }
+
+    public function getAllPrefixes()
+    {
+
+        return $this->prefixModel->findAll();
     }
 }

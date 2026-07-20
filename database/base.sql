@@ -29,7 +29,8 @@ CREATE TABLE frais (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     minimum REAL,
     maximum REAL NOT NULL,
-    valeur REAL NOT NULL
+    valeur REAL NOT NULL,
+    typeTransactionId INTEGER NOT NULL REFERENCES typeTransaction(id)
 );
 CREATE TABLE transactions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
