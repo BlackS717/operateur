@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-class AuthService {
+class ClientService {
     public function __construct(){
 
     }

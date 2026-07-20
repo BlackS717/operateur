@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-class AuthService {
+class OperateurService {
     public function __construct(){
 
     }

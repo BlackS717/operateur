@@ -2,6 +2,9 @@
 
 namespace Config;
 
+use App\Services\AuthService;
+use App\Services\ClientService;
+use App\Services\OperateurService;
 use CodeIgniter\Config\BaseService;
 
 /**
@@ -29,4 +32,28 @@ class Services extends BaseService
      *     return new \CodeIgniter\Example();
      * }
      */
+
+    public static function authService(bool $getShared = true){
+        if($getShared){
+            return static::getSharedInstance('authService');
+        }
+
+        return new AuthService();
+    }
+
+    public static function clientService(bool $getShared = true){
+        if($getShared){
+            return static::getSharedInstance('clientService');
+        }
+
+        return new ClientService();
+    }
+
+    public static function operateurService(bool $getShared = true){
+        if($getShared){
+            return static::getSharedInstance('operateurService');
+        }
+
+        return new OperateurService();
+    }
 }
