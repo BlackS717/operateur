@@ -23,7 +23,7 @@ class CreateUtilisateur extends Migration
             ],
             'roleId' => [
                 'type' => 'INTEGER',
-                'null' => true,
+                'default' => '2',
             ],
         ]);
 
