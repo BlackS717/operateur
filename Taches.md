@@ -42,43 +42,43 @@
 
 # v2
 
-## Modification base de donnee
+## Modification base de donnee ```ETU 3893```
 
-- [ ] Modification de la base pour separer l'operateur du client
-- [ ] Modification de l'authentification pour separer les utilisateurs des operateurs
+- [x] Modification de la base pour separer l'operateur du client
+- [x] Modification de l'authentification pour separer les utilisateurs des operateurs
 
 ## Côté opérateur
 
-### Gestion des opérateurs
-- [ ] Ajouter la gestion de plusieurs opérateurs.
-- [ ] Configurer les préfixes valides pour chaque opérateur (ex. : 032, 031, 033, 037...).
-- [ ] Associer chaque préfixe à son opérateur.
+### Gestion des opérateurs ```ETU 4316```
+- [x] Ajouter la gestion de plusieurs opérateurs.
+- [x] Configurer les préfixes valides pour chaque opérateur (ex. : 032, 031, 033, 037...).
+- [x] Associer chaque préfixe à son opérateur.
 
-### Gestion des frais
-- [ ] Configurer un pourcentage de commission supplémentaire pour les transferts vers les autres opérateurs.
-- [ ] Appliquer automatiquement cette commission lors des transferts inter-opérateurs.
+### Gestion des frais ```ETU 3893```
+- [x] Configurer un pourcentage de commission supplémentaire pour les transferts vers les autres opérateurs.
+- [x] Appliquer automatiquement cette commission lors des transferts inter-opérateurs.
 
-### Tableaux de bord
-- [ ] Séparer les gains provenant des opérations du même opérateur et des autres opérateurs dans la page **"Situation gain via les différents frais"**.
-- [ ] Ajouter une situation des montants envoyés vers chaque opérateur.
+### Tableaux de bord ```ETU 4316```
+- [x] Séparer les gains provenant des opérations du même opérateur et des autres opérateurs dans la page **"Situation gain via les différents frais"**.
+- [x] Ajouter une situation des montants envoyés vers chaque opérateur.
 
 ## Côté client
 
-### Transfert
-- [ ] Ajouter une option permettant d'inclure les frais de retrait lors de l'envoi.
-- [ ] Ne pas appliquer de frais de retrait pour les transferts vers les autres opérateurs.
-- [ ] Permettre l'envoi multiple vers plusieurs numéros.
-- [ ] Répartir automatiquement le montant total entre les différents numéros.
-- [ ] Limiter l'envoi multiple aux destinataires appartenant au même opérateur.
+### Transfert ```ETU 3893``` 
+- [x] Ajouter une option permettant d'inclure les frais de retrait lors de l'envoi.
+- [x] Ne pas appliquer de frais de retrait pour les transferts vers les autres opérateurs.
+- [x] Permettre l'envoi multiple vers plusieurs numéros.
+- [x] Répartir automatiquement le montant total entre les différents numéros.
+- [x] Limiter l'envoi multiple aux destinataires appartenant au même opérateur.
 
 ## Backend
 
-### API
-- [ ] Adapter les API pour la gestion de plusieurs opérateurs.
-- [ ] Implémenter le calcul des commissions inter-opérateurs.
-- [ ] Implémenter le calcul des frais avec l'option "inclure les frais de retrait".
-- [ ] Développer les API d'envoi multiple.
-- [ ] Ajouter les validations pour empêcher un envoi multiple entre différents opérateurs.
+### API ```ETU 4316```
+- [x] Adapter les API pour la gestion de plusieurs opérateurs.
+- [x] Implémenter le calcul des commissions inter-opérateurs.
+- [x] Implémenter le calcul des frais avec l'option "inclure les frais de retrait".
+- [x] Développer les API d'envoi multiple.
+- [X] Ajouter les validations pour empêcher un envoi multiple entre différents opérateurs.
 
 ## Tests
 
