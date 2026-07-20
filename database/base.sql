@@ -34,6 +34,7 @@ CREATE TABLE frais (
 CREATE TABLE transactions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     utilisateurId INTEGER NOT NULL REFERENCES utilisateur(id),
+    destinataireId INTEGER NOT NULL REFERENCES utilisateur(id),
     typeTransactionId INTEGER NOT NULL REFERENCES typeTransaction(id),
     montant REAL NOT NULL,
     frais REAL NOT NULL,

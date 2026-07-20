@@ -11,6 +11,9 @@ class DatabaseSeeder extends Seeder
         $this->call('RoleSeeder');
         $this->call('PrefixSeeder');
         $this->call('UtilisateurSeeder');
+        $this->call('PorteFeuilleSeeder');
+        $this->call('TypeTransactionSeeder');
         $this->call('FraisSeeder');
+        $this->call('TransactionsSeeder');
     }
 }
