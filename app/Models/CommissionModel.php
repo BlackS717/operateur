@@ -43,4 +43,28 @@ class CommissionModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+    /**
+     * Retourne le pourcentage de commission pour un transfert
+     * entre l'operateur source et l'operateur destinataire.
+     */
+    public function getCommission(int $sourceOperateurId, int $destinataireOperateurId): ?float
+    {
+        $row = $this->where('source', $sourceOperateurId)
+            ->where('destinataire', $destinataireOperateurId)
+            ->first();
+        return $row ? (float) $row['pourcentage'] : null;
+    }
+
+    /**
+     * Retourne toutes les commissions avec les labels des operateurs.
+     */
+    public function getAllWithOperateurs(): array
+    {
+        return $this->select('commission.*, src.labelle as sourceLabelle, dst.labelle as destinataireLabelle')
+            ->join('operateur src', 'src.id = commission.source', 'left')
+            ->join('operateur dst', 'dst.id = commission.destinataire', 'left')
+            ->orderBy('src.labelle, dst.labelle', 'ASC')
+            ->findAll();
+    }
 }

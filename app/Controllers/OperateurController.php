@@ -217,4 +217,123 @@ class OperateurController extends BaseController
             'clients' => $this->operateurService->getSituationComptesClients(),
         ]);
     }
+
+    // Commissions inter-operateurs
+
+    public function commissions(): string
+    {
+        return view('operateur/commissions', [
+            'commissions' => $this->operateurService->getAllCommissions(),
+            'operateurs' => $this->operateurService->getAllOperateurs(),
+        ]);
+    }
+
+    public function commissionsAdd()
+    {
+        $rules = [
+            'source' => [
+                'rules' => 'required|numeric|is_not_unique[operateur.id]',
+                'errors' => [
+                    'required' => "L'operateur source est obligatoire.",
+                    'numeric' => "L'operateur source est invalide.",
+                    'is_not_unique' => "L'operateur source n'existe pas.",
+                ],
+            ],
+            'destinataire' => [
+                'rules' => 'required|numeric|is_not_unique[operateur.id]',
+                'errors' => [
+                    'required' => "L'operateur destinataire est obligatoire.",
+                    'numeric' => "L'operateur destinataire est invalide.",
+                    'is_not_unique' => "L'operateur destinataire n'existe pas.",
+                ],
+            ],
+            'pourcentage' => [
+                'rules' => 'required|numeric|greater_than_equal_to[0]|less_than_equal_to[100]',
+                'errors' => [
+                    'required' => 'Le pourcentage est obligatoire.',
+                    'numeric' => 'Le pourcentage doit etre un nombre.',
+                    'greater_than_equal_to' => 'Le pourcentage doit etre au moins 0.',
+                    'less_than_equal_to' => 'Le pourcentage ne peut pas depasser 100.',
+                ],
+            ],
+        ];
+        if (!$this->validate($rules)) {
+            return redirect()->back()->withInput()->with('reports', $this->validator->getErrors());
+        }
+
+        $result = $this->operateurService->addCommission(
+            (int) $this->request->getPost('source'),
+            (int) $this->request->getPost('destinataire'),
+            (float) $this->request->getPost('pourcentage')
+        );
+        return redirect()->to('/admin/commissions')->with('reports', [$result['message']]);
+    }
+
+    public function commissionsEdit(int $id): string
+    {
+        $commission = $this->operateurService->getCommissionById($id);
+        if (!$commission) {
+            return redirect()->to('/admin/commissions')->with('reports', ['Commission introuvable.']);
+        }
+
+        return view('operateur/commissions_edit', [
+            'commission' => $commission,
+            'operateurs' => $this->operateurService->getAllOperateurs(),
+        ]);
+    }
+
+    public function commissionsEditSubmit(int $id)
+    {
+        if (!$this->operateurService->getCommissionById($id)) {
+            return redirect()->to('/admin/commissions')->with('reports', ['Commission introuvable.']);
+        }
+
+        $rules = [
+            'source' => [
+                'rules' => 'required|numeric|is_not_unique[operateur.id]',
+                'errors' => [
+                    'required' => "L'operateur source est obligatoire.",
+                    'numeric' => "L'operateur source est invalide.",
+                    'is_not_unique' => "L'operateur source n'existe pas.",
+                ],
+            ],
+            'destinataire' => [
+                'rules' => 'required|numeric|is_not_unique[operateur.id]',
+                'errors' => [
+                    'required' => "L'operateur destinataire est obligatoire.",
+                    'numeric' => "L'operateur destinataire est invalide.",
+                    'is_not_unique' => "L'operateur destinataire n'existe pas.",
+                ],
+            ],
+            'pourcentage' => [
+                'rules' => 'required|numeric|greater_than_equal_to[0]|less_than_equal_to[100]',
+                'errors' => [
+                    'required' => 'Le pourcentage est obligatoire.',
+                    'numeric' => 'Le pourcentage doit etre un nombre.',
+                    'greater_than_equal_to' => 'Le pourcentage doit etre au moins 0.',
+                    'less_than_equal_to' => 'Le pourcentage ne peut pas depasser 100.',
+                ],
+            ],
+        ];
+        if (!$this->validate($rules)) {
+            return redirect()->back()->withInput()->with('reports', $this->validator->getErrors());
+        }
+
+        $result = $this->operateurService->updateCommission(
+            $id,
+            (int) $this->request->getPost('source'),
+            (int) $this->request->getPost('destinataire'),
+            (float) $this->request->getPost('pourcentage')
+        );
+        return redirect()->to('/admin/commissions')->with('reports', [$result['message']]);
+    }
+
+    public function commissionsDelete(int $id)
+    {
+        if (!$this->operateurService->getCommissionById($id)) {
+            return redirect()->to('/admin/commissions')->with('reports', ['Commission introuvable.']);
+        }
+        $this->operateurService->deleteCommission($id);
+        return redirect()->to('/admin/commissions')->with('reports', ['Commission supprimee.']);
+    }
 }

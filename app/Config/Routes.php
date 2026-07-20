@@ -39,4 +39,9 @@ $routes->group('admin', ['filter' => 'auth:admin'], function ($routes) {
     $routes->get('frais/delete/(:num)', 'OperateurController::fraisDelete/$1');
     $routes->get('gains', 'OperateurController::gains');
     $routes->get('clients', 'OperateurController::clients');
+    $routes->get('commissions', 'OperateurController::commissions');
+    $routes->post('commissions', 'OperateurController::commissionsAdd');
+    $routes->get('commissions/edit/(:num)', 'OperateurController::commissionsEdit/$1');
+    $routes->post('commissions/edit/(:num)', 'OperateurController::commissionsEditSubmit/$1');
+    $routes->get('commissions/delete/(:num)', 'OperateurController::commissionsDelete/$1');
 });

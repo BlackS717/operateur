@@ -9,6 +9,7 @@ use App\Models\TransactionsModel;
 use App\Models\UtilisateurModel;
 use App\Models\PorteFeuilleModel;
 use App\Models\OperateurModel;
+use App\Models\CommissionModel;
 
 class OperateurService
 {
@@ -19,6 +20,7 @@ class OperateurService
     private $utilisateurModel;
     private $porteFeuilleModel;
     private $operateurModel;
+    private $commissionModel;
 
     public function __construct()
     {
@@ -29,6 +31,7 @@ class OperateurService
         $this->utilisateurModel = new UtilisateurModel();
         $this->porteFeuilleModel = new PorteFeuilleModel();
         $this->operateurModel = new OperateurModel();
+        $this->commissionModel = new CommissionModel();
     }
 
     // Authentification operateur (admin)
@@ -196,5 +199,81 @@ class OperateurService
             ->join('operateur', 'operateur.id = porteFeuille.operateurId', 'left')
             ->orderBy('utilisateur.dateCreation', 'DESC')
             ->findAll();
+    }
+
+    // Commissions inter-operateurs
+
+    public function getAllCommissions(): array
+    {
+        return $this->commissionModel->getAllWithOperateurs();
+    }
+
+    public function getCommissionById(int $id): ?array
+    {
+        return $this->commissionModel->find($id);
+    }
+
+    /** @return array{success: bool, message: string} */
+    public function addCommission(int $source, int $destinataire, float $pourcentage): array
+    {
+        if ($source === $destinataire) {
+            return ['success' => false, 'message' => 'La source et le destinataire doivent etre differents.'];
+        }
+        if (!$this->operateurModel->find($source)) {
+            return ['success' => false, 'message' => 'Operateur source introuvable.'];
+        }
+        if (!$this->operateurModel->find($destinataire)) {
+            return ['success' => false, 'message' => 'Operateur destinataire introuvable.'];
+        }
+        if ($pourcentage < 0 || $pourcentage > 100) {
+            return ['success' => false, 'message' => 'Le pourcentage doit etre compris entre 0 et 100.'];
+        }
+        if ($this->commissionModel->where('source', $source)->where('destinataire', $destinataire)->first()) {
+            return ['success' => false, 'message' => 'Cette commission existe deja.'];
+        }
+
+        $this->commissionModel->insert([
+            'source' => $source,
+            'destinataire' => $destinataire,
+            'pourcentage' => $pourcentage,
+        ]);
+        return ['success' => true, 'message' => 'Commission ajoutee.'];
+    }
+
+    /** @return array{success: bool, message: string} */
+    public function updateCommission(int $id, int $source, int $destinataire, float $pourcentage): array
+    {
+        if (!$this->commissionModel->find($id)) {
+            return ['success' => false, 'message' => 'Commission introuvable.'];
+        }
+        if ($source === $destinataire) {
+            return ['success' => false, 'message' => 'La source et le destinataire doivent etre differents.'];
+        }
+        if (!$this->operateurModel->find($source)) {
+            return ['success' => false, 'message' => 'Operateur source introuvable.'];
+        }
+        if (!$this->operateurModel->find($destinataire)) {
+            return ['success' => false, 'message' => 'Operateur destinataire introuvable.'];
+        }
+        if ($pourcentage < 0 || $pourcentage > 100) {
+            return ['success' => false, 'message' => 'Le pourcentage doit etre compris entre 0 et 100.'];
+        }
+
+        $existing = $this->commissionModel->where('source', $source)->where('destinataire', $destinataire)->first();
+        if ($existing && (int) $existing['id'] !== $id) {
+            return ['success' => false, 'message' => 'Cette commission existe deja.'];
+        }
+
+        $this->commissionModel->update($id, [
+            'source' => $source,
+            'destinataire' => $destinataire,
+            'pourcentage' => $pourcentage,
+        ]);
+        return ['success' => true, 'message' => 'Commission modifiee.'];
+    }
+
+    public function deleteCommission(int $id): bool
+    {
+        return $this->commissionModel->delete($id);
     }
 }

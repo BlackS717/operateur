@@ -7,6 +7,8 @@ use App\Models\PorteFeuilleModel;
 use App\Models\TransactionsModel;
 use App\Models\FraisModel;
 use App\Models\TypeTransactionModel;
+use App\Models\PrefixModel;
+use App\Models\CommissionModel;
 
 class ClientService
 {
@@ -15,6 +17,8 @@ class ClientService
     private $transactionsModel;
     private $fraisModel;
     private $typeTransactionModel;
+    private $prefixModel;
+    private $commissionModel;
 
     public function __construct()
     {
@@ -23,6 +27,8 @@ class ClientService
         $this->transactionsModel = new TransactionsModel();
         $this->fraisModel = new FraisModel();
         $this->typeTransactionModel = new TypeTransactionModel();
+        $this->prefixModel = new PrefixModel();
+        $this->commissionModel = new CommissionModel();
     }
 
     public function getAllClients()
@@ -51,6 +57,42 @@ class ClientService
     {
         $frais = $this->fraisModel->getFraisPourMontant($typeTransactionId, $montant);
         return $frais ? (float) $frais['valeur'] : 0.0;
+    }
+
+    /**
+     * Retourne l'operateurId d'un utilisateur via son portefeuille.
+     */
+    private function getOperateurIdByUtilisateur(int $utilisateurId): ?int
+    {
+        $portefeuille = $this->porteFeuilleModel->getByUtilisateurId($utilisateurId);
+        return $portefeuille ? (int) $portefeuille['operateurId'] : null;
+    }
+
+    /**
+     * Calcule la commission inter-operateur si les deux utilisateurs
+     * appartiennent a des operateurs differents.
+     * Retourne 0 si meme operateur ou pas de commission configurée.
+     */
+    private function calculerCommissionInterOperateur(int $sourceUtilisateurId, int $destinataireUtilisateurId, float $montant): float
+    {
+        $sourceOperateur = $this->getOperateurIdByUtilisateur($sourceUtilisateurId);
+        $destinataireOperateur = $this->getOperateurIdByUtilisateur($destinataireUtilisateurId);
+
+        if ($sourceOperateur === null || $destinataireOperateur === null) {
+            return 0.0;
+        }
+
+        // Meme operateur => pas de commission
+        if ($sourceOperateur === $destinataireOperateur) {
+            return 0.0;
+        }
+
+        $pourcentage = $this->commissionModel->getCommission($sourceOperateur, $destinataireOperateur);
+        if ($pourcentage === null) {
+            return 0.0;
+        }
+
+        return $montant * ($pourcentage / 100.0);
     }
 
     /**
@@ -127,10 +169,16 @@ class ClientService
 
         $typeId = $this->getTypeIdByNom('Transfert');
         $frais = $this->calculerFrais($typeId, $montant);
-        $total = $montant + $frais;
+        $commissionInter = $this->calculerCommissionInterOperateur($utilisateurId, (int) $destinataire['id'], $montant);
+        $total = $montant + $frais + $commissionInter;
 
         if ($this->getSolde($utilisateurId) < $total) {
-            return ['success' => false, 'message' => 'Solde insuffisant (montant + frais de ' . $frais . ' Ar).'];
+            $msg = 'Solde insuffisant (montant + frais de ' . number_format($frais, 0, ',', ' ') . ' Ar';
+            if ($commissionInter > 0) {
+                $msg .= ' + commission inter-operateur de ' . number_format($commissionInter, 0, ',', ' ') . ' Ar';
+            }
+            $msg .= ').';
+            return ['success' => false, 'message' => $msg];
         }
 
         $this->porteFeuilleModel->debiter($utilisateurId, $total);
@@ -144,7 +192,11 @@ class ClientService
             'frais' => $frais,
         ]);
 
-        return ['success' => true, 'message' => 'Transfert effectue avec succes.'];
+        $message = 'Transfert effectue avec succes.';
+        if ($commissionInter > 0) {
+            $message .= ' (Commission inter-operateur de ' . number_format($commissionInter, 0, ',', ' ') . ' Ar appliquee.)';
+        }
+        return ['success' => true, 'message' => $message];
     }
 
     public function getHistorique(int $utilisateurId): array
