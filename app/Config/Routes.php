@@ -6,5 +6,5 @@ use CodeIgniter\Router\RouteCollection;
 $routes->get('/', 'AuthController::index');
 
 $routes->group('auth',function($routes){
-    $routes->post('login', 'AuthController:authenticate');
+    $routes->post('login', 'AuthController::authenticate');
 });

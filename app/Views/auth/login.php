@@ -8,15 +8,14 @@
 <body>
     <h1>Login</h1>
 
-    <?php  if($messages = session()->get('messages')) { ?>
-        <?php foreach($messages as $message) {?>
-            <p><?= esc($message) ?></p>
-
+    <?php  if($reports = session()->getFlashdata('reports')) { ?>
+        <?php foreach($reports as $report) {?>
+            <p><?= esc($report) ?></p>
         <?php } ?>
     <?php }?>
 
 
-    <form action="<?= base_url('auth/login') ?>" method="post">
+    <form action="<?= base_url('/auth/login') ?>" method="post">
         <label for="username">Phone number:</label>
         <input type="number" id="phone" name="phone" required value="<?= old('phone') ?>">
         <br>

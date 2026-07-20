@@ -19,7 +19,7 @@ class AuthController extends BaseController
 
         $str = "required|numeric|regex_match[/^(";
         $str.= implode('|', $validNumbers);
-        $str.= ")]";
+        $str.= ")/]";
         return $str;
     }
     
