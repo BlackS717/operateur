@@ -30,3 +30,8 @@ CREATE TABLE transactions (
     frais REAL NOT NULL,
     dateTransaction TEXT NOT NULL DEFAULT (datetime('now'))
 );
+
+create table prefix(
+    id BIGINT PRIMARY KEY AUTOINCREMENT,
+    nom text NOT NULL UNIQUE
+);

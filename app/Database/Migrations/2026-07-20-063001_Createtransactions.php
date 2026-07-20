@@ -13,10 +13,10 @@ class Createtransactions extends Migration
                 'type'           => 'INTEGER',
                 'auto_increment' => true,
             ],
-            'utilisateur_id' => [
+            'utilisateurId' => [
                 'type' => 'INTEGER',
             ],
-            'type_transaction_id' => [
+            'typeTransactionId' => [
                 'type' => 'INTEGER',
             ],
             'montant' => [
@@ -25,7 +25,7 @@ class Createtransactions extends Migration
             'frais' => [
                 'type' => 'REAL',
             ],
-            'date_transaction' => [
+            'dateTransaction' => [
                 'type'    => 'TEXT',
                 'default' => 'CURRENT_TIMESTAMP',
             ],
@@ -34,7 +34,7 @@ class Createtransactions extends Migration
         $this->forge->addKey('id', true);
 
         $this->forge->addForeignKey(
-            'utilisateur_id',
+            'utilisateurId',
             'utilisateur',
             'id',
             'CASCADE',
@@ -42,8 +42,8 @@ class Createtransactions extends Migration
         );
 
         $this->forge->addForeignKey(
-            'type_transaction_id',
-            'type_transaction',
+            'typeTransactionId',
+            'typeTransaction',
             'id',
             'CASCADE',
             'CASCADE'

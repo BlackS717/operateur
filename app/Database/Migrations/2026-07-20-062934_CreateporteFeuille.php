@@ -23,21 +23,21 @@ class CreateporteFeuille extends Migration
         ]);
 
         $this->forge->addKey('id', true);
-        $this->forge->addUniqueKey('utilisateur_id');
+        $this->forge->addUniqueKey('utilisateurId');
 
         $this->forge->addForeignKey(
-            'utilisateur_id',
+            'utilisateurId',
             'utilisateur',
             'id',
             'CASCADE',
             'CASCADE'
         );
 
-        $this->forge->createTable('porte_feuille');
+        $this->forge->createTable('porteFeuille');
     }
 
     public function down()
     {
-        $this->forge->dropTable('porte_feuille');
+        $this->forge->dropTable('porteFeuille');
     }
 }
