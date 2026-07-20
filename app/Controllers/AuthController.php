@@ -23,19 +23,24 @@ class AuthController extends BaseController
         return $str;
     }
     
-    
-    
-    
     public function authenticate(): RedirectResponse{
 
         $rules = [
             'phone' => $this->buildNumberValidation(),
         ];
 
-
         if(!$this->validate($rules)){
             return redirect()->back()->withInput()->with('reports', $this->validator->getErrors());
         }
+
+        
+
+
+
+
+
+
+
 
         return redirect()->back()->withInput()->with('reports', ['phone' => 'login successful']);
     }
