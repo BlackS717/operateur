@@ -53,7 +53,7 @@ class Services extends BaseService
         if($getShared){
             return static::getSharedInstance('operateurService');
         }
-
+        
         return new OperateurService();
     }
 }
