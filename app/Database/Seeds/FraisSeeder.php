@@ -8,33 +8,20 @@ class FraisSeeder extends Seeder
 {
     public function run()
     {
-        $tranches = [
-            ['minimum' => 100,      'maximum' => 1000,    'valeur' => 50],
-            ['minimum' => 1001,     'maximum' => 5000,    'valeur' => 50],
-            ['minimum' => 5001,     'maximum' => 10000,   'valeur' => 100],
-            ['minimum' => 10001,    'maximum' => 25000,   'valeur' => 200],
-            ['minimum' => 25001,    'maximum' => 50000,   'valeur' => 400],
-            ['minimum' => 50001,    'maximum' => 100000,  'valeur' => 800],
-            ['minimum' => 100001,   'maximum' => 250000,  'valeur' => 1500],
-            ['minimum' => 250001,   'maximum' => 500000,  'valeur' => 1500],
-            ['minimum' => 500001,   'maximum' => 1000000, 'valeur' => 2500],
-            ['minimum' => 1000001,  'maximum' => 2000000, 'valeur' => 3000],
+        // Bareme applique au type "Transfert" (typeTransactionId = 3),
+        // conforme aux donnees de reference de database/new.sql.
+        $data = [
+            ['minimum' => 100,      'maximum' => 1000,    'valeur' => 50,   'typeTransactionId' => 3],
+            ['minimum' => 1001,     'maximum' => 5000,    'valeur' => 50,   'typeTransactionId' => 3],
+            ['minimum' => 5001,     'maximum' => 10000,   'valeur' => 100,  'typeTransactionId' => 3],
+            ['minimum' => 10001,    'maximum' => 25000,   'valeur' => 200,  'typeTransactionId' => 3],
+            ['minimum' => 25001,    'maximum' => 50000,   'valeur' => 400,  'typeTransactionId' => 3],
+            ['minimum' => 50001,    'maximum' => 100000,  'valeur' => 800,  'typeTransactionId' => 3],
+            ['minimum' => 100001,   'maximum' => 250000,  'valeur' => 1500, 'typeTransactionId' => 3],
+            ['minimum' => 250001,   'maximum' => 500000,  'valeur' => 1500, 'typeTransactionId' => 3],
+            ['minimum' => 500001,   'maximum' => 1000000, 'valeur' => 2500, 'typeTransactionId' => 3],
+            ['minimum' => 1000001,  'maximum' => 2000000, 'valeur' => 5000, 'typeTransactionId' => 3],
         ];
-
-        // Le meme bareme s'applique par defaut aux 3 types d'operation
-        // (Depot=1, Retrait=2, Transfert=3). Il reste modifiable
-        // independamment par type depuis l'espace operateur.
-        $data = [];
-        for ($typeTransactionId = 1; $typeTransactionId <= 3; $typeTransactionId++) {
-            foreach ($tranches as $tranche) {
-                $data[] = [
-                    'minimum' => $tranche['minimum'],
-                    'maximum' => $tranche['maximum'],
-                    'valeur' => $tranche['valeur'],
-                    'typeTransactionId' => $typeTransactionId,
-                ];
-            }
-        }
 
         $this->db->table('frais')->insertBatch($data);
     }

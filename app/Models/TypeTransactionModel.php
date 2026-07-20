@@ -6,7 +6,7 @@ use CodeIgniter\Model;
 
 class TypeTransactionModel extends Model
 {
-    protected $table            = 'typetransaction';
+    protected $table            = 'typeTransaction';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';

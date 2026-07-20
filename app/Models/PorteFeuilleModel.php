@@ -12,7 +12,7 @@ class PorteFeuilleModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['utilisateurId', 'solde'];
+    protected $allowedFields    = ['utilisateurId', 'solde', 'operateurId'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

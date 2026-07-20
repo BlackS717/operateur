@@ -45,6 +45,14 @@ class Createtransactions extends Migration
         );
 
         $this->forge->addForeignKey(
+            'destinataireId',
+            'utilisateur',
+            'id',
+            'CASCADE',
+            'CASCADE'
+        );
+
+        $this->forge->addForeignKey(
             'typeTransactionId',
             'typeTransaction',
             'id',

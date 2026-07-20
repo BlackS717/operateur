@@ -4,7 +4,7 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class CreateRole extends Migration
+class CreateUtilisateur extends Migration
 {
     public function up()
     {
@@ -13,20 +13,24 @@ class CreateRole extends Migration
                 'type'           => 'INTEGER',
                 'auto_increment' => true,
             ],
-            'nom' => [
+            'numero' => [
                 'type' => 'TEXT',
                 'null' => false,
+            ],
+            'dateCreation' => [
+                'type'    => 'TEXT',
+                'default' => 'CURRENT_TIMESTAMP',
             ],
         ]);
 
         $this->forge->addKey('id', true);
-        $this->forge->addUniqueKey('nom');
+        $this->forge->addUniqueKey('numero');
 
-        $this->forge->createTable('role');
+        $this->forge->createTable('utilisateur');
     }
 
     public function down()
     {
-        $this->forge->dropTable('role');
+        $this->forge->dropTable('utilisateur');
     }
 }

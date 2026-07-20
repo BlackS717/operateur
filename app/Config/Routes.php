@@ -10,7 +10,7 @@ $routes->group('auth', function ($routes) {
     $routes->get('logout', 'AuthController::logout');
 });
 
-$routes->group('user', ['filter' => 'auth:2'], function ($routes) {
+$routes->group('user', ['filter' => 'auth:client'], function ($routes) {
     $routes->get('/', 'ClientController::index');
     $routes->get('depot', 'ClientController::depot');
     $routes->post('depot', 'ClientController::depotSubmit');
@@ -21,7 +21,11 @@ $routes->group('user', ['filter' => 'auth:2'], function ($routes) {
     $routes->get('historique', 'ClientController::historique');
 });
 
-$routes->group('admin', ['filter' => 'auth:1'], function ($routes) {
+$routes->get('admin/login', 'OperateurAuthController::index');
+$routes->post('admin/login', 'OperateurAuthController::authenticate');
+$routes->get('admin/logout', 'OperateurAuthController::logout');
+
+$routes->group('admin', ['filter' => 'auth:admin'], function ($routes) {
     $routes->get('/', 'OperateurController::index');
     $routes->get('prefixes', 'OperateurController::prefixes');
     $routes->post('prefixes', 'OperateurController::prefixesAdd');

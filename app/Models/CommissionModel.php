@@ -4,15 +4,15 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class RoleModel extends Model
+class CommissionModel extends Model
 {
-    protected $table            = 'role';
+    protected $table            = 'commission';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = [];
+    protected $allowedFields    = ['source', 'destinataire', 'pourcentage'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

@@ -8,7 +8,7 @@
             <a class="nav-link" href="<?= base_url('/admin/frais') ?>">Baremes de frais</a>
             <a class="nav-link" href="<?= base_url('/admin/gains') ?>">Gains</a>
             <a class="nav-link" href="<?= base_url('/admin/clients') ?>">Comptes clients</a>
-            <a class="nav-link" href="<?= base_url('/auth/logout') ?>">Deconnexion</a>
+            <a class="nav-link" href="<?= base_url('/admin/logout') ?>">Deconnexion</a>
         </div>
     </div>
 </nav>

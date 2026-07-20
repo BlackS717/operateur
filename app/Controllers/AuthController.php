@@ -60,10 +60,6 @@ class AuthController extends BaseController
             $user = $this->authService->register($this->request->getPost('phone'));
             }
         session()->set('userId', $user['id']);
-        session()->set('roleId', $user['roleId']);
-        if ($user['roleId'] == 1) {
-            return redirect()->to('/admin');
-        }
         return redirect()->to('/user');
     }
 

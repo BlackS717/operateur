@@ -10,15 +10,17 @@ class AuthFilter implements FilterInterface
 {
     public function before(RequestInterface $request, $arguments = null)
     {
-        $userId = session()->get('userId');
+        $mode = $arguments[0] ?? 'client';
 
-        if (!$userId) {
-            return redirect()->to('/')->with('reports', ['Veuillez vous connecter.']);
+        if ($mode === 'admin') {
+            if (!session()->get('operateurId')) {
+                return redirect()->to('/admin/login')->with('reports', ['Veuillez vous connecter.']);
+            }
+            return;
         }
 
-        $role = session()->get('roleId');
-        if ($arguments !== null && !in_array((int) $role, array_map('intval', $arguments), true)) {
-            return redirect()->to('/')->with('reports', ['Acces non autorise.']);
+        if (!session()->get('userId')) {
+            return redirect()->to('/')->with('reports', ['Veuillez vous connecter.']);
         }
     }
 

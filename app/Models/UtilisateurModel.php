@@ -53,10 +53,14 @@ class UtilisateurModel extends Model
             'numero' => $numero
         ], true);
 
+        $prefixModel = new PrefixModel();
+        $prefix = $prefixModel->getByNumero($numero);
+
         $porteFeuilleModel = new PorteFeuilleModel();
         $porteFeuilleModel->insert([
             'utilisateurId' => $id,
             'solde' => 0,
+            'operateurId' => $prefix ? $prefix['operateurId'] : null,
         ]);
 
         $db->transComplete();

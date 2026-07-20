@@ -4,15 +4,15 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class PrefixModel extends Model
+class OperateurModel extends Model
 {
-    protected $table            = 'prefix';
+    protected $table            = 'operateur';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['nom', 'operateurId'];
+    protected $allowedFields    = ['labelle', 'motDePasse'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -35,30 +35,25 @@ class PrefixModel extends Model
 
     // Callbacks
     protected $allowCallbacks = true;
-    protected $beforeInsert   = [];
+    protected $beforeInsert   = ['hashPassword'];
     protected $afterInsert    = [];
-    protected $beforeUpdate   = [];
+    protected $beforeUpdate   = ['hashPassword'];
     protected $afterUpdate    = [];
     protected $beforeFind     = [];
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-    public function getAllPrefixes(): array
+    protected function hashPassword(array $data): array
     {
-        return $this->select('nom')
-            ->orderBy('nom', 'ASC')
-            ->findAll();
+        if (isset($data['data']['motDePasse'])) {
+            $data['data']['motDePasse'] = password_hash($data['data']['motDePasse'], PASSWORD_DEFAULT);
+        }
+        return $data;
     }
 
-    public function getByNumero(string $numero): ?array
+    public function getByLabelle(string $labelle): ?array
     {
-        $prefixes = $this->findAll();
-        foreach ($prefixes as $prefix) {
-            if (strpos($numero, $prefix['nom']) === 0) {
-                return $prefix;
-            }
-        }
-        return null;
+        return $this->where('labelle', $labelle)->first();
     }
 }

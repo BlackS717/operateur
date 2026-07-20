@@ -8,7 +8,7 @@ use App\Models\FraisModel;
 use App\Models\TransactionsModel;
 use App\Models\UtilisateurModel;
 use App\Models\PorteFeuilleModel;
-use App\Models\RoleModel;
+use App\Models\OperateurModel;
 
 class OperateurService
 {
@@ -18,7 +18,7 @@ class OperateurService
     private $transactionsModel;
     private $utilisateurModel;
     private $porteFeuilleModel;
-    private $roleModel;
+    private $operateurModel;
 
     public function __construct()
     {
@@ -28,7 +28,19 @@ class OperateurService
         $this->transactionsModel = new TransactionsModel();
         $this->utilisateurModel = new UtilisateurModel();
         $this->porteFeuilleModel = new PorteFeuilleModel();
-        $this->roleModel = new RoleModel();
+        $this->operateurModel = new OperateurModel();
+    }
+
+    // Authentification operateur (admin)
+
+    public function authenticate(string $labelle, string $motDePasse): ?array
+    {
+        $operateur = $this->operateurModel->getByLabelle($labelle);
+        if (!$operateur || !password_verify($motDePasse, $operateur['motDePasse'])) {
+            return null;
+        }
+        unset($operateur['motDePasse']);
+        return $operateur;
     }
 
     // Prefixes
@@ -164,16 +176,11 @@ class OperateurService
 
     public function getSituationComptesClients(): array
     {
-        $roleClient = $this->roleModel->where('nom', 'client')->first();
-
-        $query = $this->utilisateurModel
-            ->select('utilisateur.id, utilisateur.numero, utilisateur.dateCreation, porteFeuille.solde')
-            ->join('porteFeuille', 'porteFeuille.utilisateurId = utilisateur.id', 'left');
-
-        if ($roleClient) {
-            $query->where('utilisateur.roleId', $roleClient['id']);
-        }
-
-        return $query->orderBy('utilisateur.dateCreation', 'DESC')->findAll();
+        return $this->utilisateurModel
+            ->select('utilisateur.id, utilisateur.numero, utilisateur.dateCreation, porteFeuille.solde, operateur.labelle as operateurLabelle')
+            ->join('porteFeuille', 'porteFeuille.utilisateurId = utilisateur.id', 'left')
+            ->join('operateur', 'operateur.id = porteFeuille.operateurId', 'left')
+            ->orderBy('utilisateur.dateCreation', 'DESC')
+            ->findAll();
     }
 }

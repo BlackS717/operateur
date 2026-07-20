@@ -20,6 +20,9 @@ class CreateporteFeuille extends Migration
                 'type'    => 'REAL',
                 'default' => 0,
             ],
+            'operateurId' => [
+                'type' => 'INTEGER',
+            ],
         ]);
 
         $this->forge->addKey('id', true);
@@ -28,6 +31,14 @@ class CreateporteFeuille extends Migration
         $this->forge->addForeignKey(
             'utilisateurId',
             'utilisateur',
+            'id',
+            'CASCADE',
+            'CASCADE'
+        );
+
+        $this->forge->addForeignKey(
+            'operateurId',
+            'operateur',
             'id',
             'CASCADE',
             'CASCADE'

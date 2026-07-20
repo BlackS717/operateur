@@ -6,7 +6,7 @@ use CodeIgniter\Database\Migration;
 
 class Createprefix extends Migration
 {
-public function up()
+    public function up()
     {
         $this->forge->addField([
             'id' => [
@@ -17,11 +17,22 @@ public function up()
             'nom' => [
                 'type'       => 'TEXT',
                 'null'       => false,
-            ]
+            ],
+            'operateurId' => [
+                'type' => 'INTEGER',
+            ],
         ]);
 
         $this->forge->addKey('id', true);
         $this->forge->addUniqueKey('nom');
+
+        $this->forge->addForeignKey(
+            'operateurId',
+            'operateur',
+            'id',
+            'CASCADE',
+            'CASCADE'
+        );
 
         $this->forge->createTable('prefix');
     }
