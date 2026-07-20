@@ -43,4 +43,11 @@ class PrefixModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+    public function getAllPrefixes(): array
+    {
+        return $this->select('nom')
+            ->orderBy('nom', 'ASC')
+            ->findAll();
+    }
 }

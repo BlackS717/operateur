@@ -26,7 +26,12 @@ class AuthController extends BaseController
 
 
         $str = "required|numeric|regex_match[/^(";
-        $str .= implode('|', $validNumbers);
+        for($i = 0; $i < count($validNumbers); $i++) {
+            $str .= $validNumbers[$i]['nom'];
+            if ($i < count($validNumbers) - 1) {
+                $str .= "|";
+            }
+        }
         $str .= ")/]";
         return $str;
     }
