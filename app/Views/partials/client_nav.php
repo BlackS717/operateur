@@ -3,6 +3,7 @@
         <span class="navbar-brand">Mobile Money</span>
         <div class="navbar-nav">
             <a class="nav-link" href="<?= base_url('/user') ?>">Solde</a>
+            <a class="nav-link" href="<?= base_url('/user/epargne/edit') ?>">Epargne</a>
             <a class="nav-link" href="<?= base_url('/user/depot') ?>">Depot</a>
             <a class="nav-link" href="<?= base_url('/user/retrait') ?>">Retrait</a>
             <a class="nav-link" href="<?= base_url('/user/transfert') ?>">Transfert</a>

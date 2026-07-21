@@ -63,6 +63,23 @@ class UtilisateurModel extends Model
             'operateurId' => $prefix ? $prefix['operateurId'] : null,
         ]);
 
+        $defaultMontant = 0;
+        $defaultPercentage = 0;
+
+        $epargneModel = new EpargneModel();
+        $compteEpargneModel = new CompteEpargneModel();
+
+        $epargneModel->insert([
+            'utilisateurId' => $id,
+            'pourcentage' => $defaultPercentage,
+        ]);
+
+        $compteEpargneModel->insert([
+            'utilisateurId' => $id,
+            'montant' => $defaultMontant,
+        ]);
+
+
         $db->transComplete();
 
         return $this->find($id);

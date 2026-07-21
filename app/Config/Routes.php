@@ -19,6 +19,9 @@ $routes->group('user', ['filter' => 'auth:client'], function ($routes) {
     $routes->get('transfert', 'ClientController::transfert');
     $routes->post('transfert', 'ClientController::transfertSubmit');
     $routes->get('historique', 'ClientController::historique');
+    $routes->get('epargne/edit', 'ClientController::epargne');
+    $routes->post('epargne/edit/(:num)', 'ClientController::epargneSubmit/$1');
+    
 });
 
 $routes->get('admin/login', 'OperateurAuthController::index');

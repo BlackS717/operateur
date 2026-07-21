@@ -62,6 +62,18 @@ CREATE TABLE promotion(
     pourcentage real 
 );
 
+CREATE TABLE epargne(
+    id int Primary KEY AUTOINCREMENT,
+    utilisateurId int REFERENCES utilisateur(id),
+    pourcentage real,
+);
+
+CREATE TABLE compteEpargne(
+    id int PRIMARY KEY AUTOINCREMENT,
+    utilisateurId int REFERENCES utilisateur(id),
+    montant real,
+);
+
 PRAGMA foreign_keys = ON;
 
 --------------------------------------------------

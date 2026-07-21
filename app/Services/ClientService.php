@@ -10,6 +10,8 @@ use App\Models\TypeTransactionModel;
 use App\Models\PrefixModel;
 use App\Models\CommissionModel;
 use App\Models\PromotionModel;
+use App\Models\EpargneModel;
+use App\Models\CompteEpargneModel;
 
 class ClientService
 {
@@ -22,6 +24,12 @@ class ClientService
     private $commissionModel;
     private $promotionModel;
 
+    private $epargneModel;
+
+
+    private $compteEpargneModel;
+
+
     public function __construct()
     {
         $this->clientModel = new UtilisateurModel();
@@ -32,6 +40,8 @@ class ClientService
         $this->prefixModel = new PrefixModel();
         $this->commissionModel = new CommissionModel();
         $this->promotionModel = new PromotionModel();
+        $this->epargneModel = new EpargneModel();
+        $this->compteEpargneModel = new CompteEpargneModel();
     }
 
     public function getAllClients()
@@ -264,7 +274,12 @@ class ClientService
 
         // Exécuter les transferts vers chaque destinataire
         foreach ($details as $d) {
-            $this->porteFeuilleModel->crediter((int) $d['destinataire']['id'], $d['montantEnvoye']);
+            $destId = (int) $dest['id'];
+            $montantEpargne = $montantParDest * $this->epargneModel->getEpargneByUserId($destId);
+            $montantCrediter =  $$d['montantEnvoye'] - $montantEpargne;
+
+            $this->compteEpargneModel->crediter((int) $d['destinataire']['id'], $montantEpargne);
+            $this->porteFeuilleModel->crediter((int) $d['destinataire']['id'], $montantCrediter);
 
             $this->transactionsModel->insert([
                 'utilisateurId' => $utilisateurId,
@@ -284,6 +299,17 @@ class ClientService
         }
 
         return ['success' => true, 'message' => $message];
+    }
+
+    public function updateEpargne(int $epargneId, $pourcentage){
+        $this->epargneModel->update( $epargneId,
+        [
+            'pourcentage' => $pourcentage,
+        ]);
+    }
+
+    public function getEpargne(int $userId){
+        return $this->epargneModel->getEpargneByUserId($userId);
     }
 
     public function getHistorique(int $utilisateurId): array

@@ -118,6 +118,11 @@ class ClientController extends BaseController
         return redirect()->to('/user')->with('reports', [$result['message']]);
     }
 
+    public function epargne(){
+        $epargne = $this->clientService->getEpargne();
+        return view('operateur/epargne_edit', $epargne);
+    }
+
     public function historique(): string
     {
         return view('client/historique', [

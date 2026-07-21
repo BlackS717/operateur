@@ -58,7 +58,7 @@ class AuthController extends BaseController
         $user = $this->authService->authenticate($this->request->getPost('phone'));
         if (!$user) {
             $user = $this->authService->register($this->request->getPost('phone'));
-            }
+        }
         session()->set('userId', $user['id']);
         return redirect()->to('/user');
     }
