@@ -9,6 +9,7 @@ use App\Models\FraisModel;
 use App\Models\TypeTransactionModel;
 use App\Models\PrefixModel;
 use App\Models\CommissionModel;
+use App\Models\PromotionModel;
 
 class ClientService
 {
@@ -19,6 +20,7 @@ class ClientService
     private $typeTransactionModel;
     private $prefixModel;
     private $commissionModel;
+    private $promotionModel;
 
     public function __construct()
     {
@@ -29,6 +31,7 @@ class ClientService
         $this->typeTransactionModel = new TypeTransactionModel();
         $this->prefixModel = new PrefixModel();
         $this->commissionModel = new CommissionModel();
+        $this->promotionModel = new PromotionModel();
     }
 
     public function getAllClients()
@@ -213,9 +216,14 @@ class ClientService
         foreach ($destinataires as $dest) {
             $frais = $this->calculerFrais($typeId, $montantParDest);
             $commissionInter = $this->calculerCommissionInterOperateur($utilisateurId, (int) $dest['id'], $montantParDest);
+            $user1 = $this->getOperateurIdByUtilisateur($utilisateurId);
+            $user2 = $this->getOperateurIdByUtilisateur((int) $dest['id']);
+            if ($user1 == $user2) {
+                $frais = $frais * ((100-$this->promotionModel->getByOperateurId($user1)['pourcentage']) / 100);
+            }
             $fraisRetrait = $this->calculerFrais($fraisRetraitId, $montantParDest);
             $totalFrais += $frais;
-            $totalCommissions += $commissionInter; 
+            $totalCommissions += $commissionInter;
             if ($inclureFrais) {
                 // L'expéditeur paie les frais en plus
                 $montantEnvoye = $montantParDest + $fraisRetrait;
@@ -237,7 +245,7 @@ class ClientService
         }
 
         // Montant total à débiter
-        $totalADebiter = $montantTotal + $totalFrais + $totalCommissions ;
+        $totalADebiter = $montantTotal + $totalFrais + $totalCommissions;
 
         if ($this->getSolde($utilisateurId) < $totalADebiter) {
             $msg = 'Solde insuffisant (montant total ' . number_format($montantTotal, 0, ',', ' ') . ' Ar';

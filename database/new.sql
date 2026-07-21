@@ -56,6 +56,11 @@ create table prefix(
     operateurId INTEGER NOT NULL REFERENCES operateur(id)
 );
 
+CREATE TABLE promotion(
+    id int PRIMARY key AUTOINCREMENT,
+    operateurId int,
+    pourcentage real 
+);
 
 PRAGMA foreign_keys = ON;
 

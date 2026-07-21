@@ -10,6 +10,7 @@ use App\Models\UtilisateurModel;
 use App\Models\PorteFeuilleModel;
 use App\Models\OperateurModel;
 use App\Models\CommissionModel;
+use App\Models\PromotionModel;
 
 class OperateurService
 {
@@ -22,6 +23,7 @@ class OperateurService
     private $operateurModel;
     private $commissionModel;
 
+    private $promotionModel;
     public function __construct()
     {
         $this->prefixModel = new PrefixModel();
@@ -32,6 +34,7 @@ class OperateurService
         $this->porteFeuilleModel = new PorteFeuilleModel();
         $this->operateurModel = new OperateurModel();
         $this->commissionModel = new CommissionModel();
+        $this->promotionModel = new PromotionModel();
     }
 
     // Authentification operateur (admin)
