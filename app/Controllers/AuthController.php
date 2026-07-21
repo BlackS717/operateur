@@ -24,7 +24,7 @@ class AuthController extends BaseController
     {
         $validNumbers = $this->authService->getAllPrefixes();
 
-        $str = "required|numeric|exact_length[10]|regex_match[/^(";
+        $str = "required|numeric|regex_match[/^(";
         for ($i = 0; $i < count($validNumbers); $i++) {
             $str .= preg_quote($validNumbers[$i]['nom'], '/');
             if ($i < count($validNumbers) - 1) {

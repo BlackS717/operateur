@@ -24,7 +24,7 @@
         <form action="<?= base_url('/auth/login') ?>" method="post">
             <div class="mb-3">
                 <label for="phone" class="form-label">Numero de telephone</label>
-                <input type="tel" id="phone" name="phone" class="form-control" inputmode="numeric" pattern="[0-9]{10}" maxlength="10" required value="<?= old('phone') ?>">
+                <input type="number" id="phone" name="phone" class="form-control" inputmode="numeric" pattern="[0-9]" required value="<?= old('phone') ?>">
             </div>
             <button type="submit" class="btn btn-primary w-100">Se connecter</button>
         </form>

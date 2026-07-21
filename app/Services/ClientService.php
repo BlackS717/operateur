@@ -183,7 +183,7 @@ class ClientService
         $destinataires = [];
         foreach ($numeros as $numero) {
             $numero = trim($numero);
-            if (!preg_match('/^[0-9]{10}$/', $numero)) {
+            if (!preg_match('/^[0-9]/', $numero)) {
                 return ['success' => false, 'message' => "Le numero '$numero' n'est pas un numero valide (10 chiffres)."];
             }
             $dest = $this->clientModel->getByNumero($numero);
@@ -208,21 +208,21 @@ class ClientService
         $totalFrais = 0.0;
         $totalCommissions = 0.0;
         $details = [];
+        $fraisRetraitId = $this->getTypeIdByNom('Retrait');
 
         foreach ($destinataires as $dest) {
             $frais = $this->calculerFrais($typeId, $montantParDest);
             $commissionInter = $this->calculerCommissionInterOperateur($utilisateurId, (int) $dest['id'], $montantParDest);
-
+            $fraisRetrait = $this->calculerFrais($fraisRetraitId, $montantParDest);
+            $totalFrais += $frais;
+            $totalCommissions += $commissionInter; 
             if ($inclureFrais) {
                 // L'expéditeur paie les frais en plus
-                $totalFrais += $frais;
-                $totalCommissions += $commissionInter;
-                $montantEnvoye = $montantParDest;
+                $montantEnvoye = $montantParDest + $fraisRetrait;
+                $totalFrais += $fraisRetrait; // Ajouter les frais de retrait au total des frais
             } else {
                 // Les frais sont déduits du montant envoyé
-                $totalFrais += $frais;
-                $totalCommissions += $commissionInter;
-                $montantEnvoye = $montantParDest - $frais;
+                $montantEnvoye = $montantParDest;
                 if ($montantEnvoye <= 0) {
                     return ['success' => false, 'message' => "Les frais de $frais Ar depassent le montant de $montantParDest Ar pour le destinataire {$dest['numero']}."];
                 }
@@ -237,7 +237,7 @@ class ClientService
         }
 
         // Montant total à débiter
-        $totalADebiter = $montantTotal + $totalFrais + $totalCommissions;
+        $totalADebiter = $montantTotal + $totalFrais + $totalCommissions ;
 
         if ($this->getSolde($utilisateurId) < $totalADebiter) {
             $msg = 'Solde insuffisant (montant total ' . number_format($montantTotal, 0, ',', ' ') . ' Ar';
