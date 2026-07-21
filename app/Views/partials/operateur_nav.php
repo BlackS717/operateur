@@ -7,6 +7,7 @@
             <a class="nav-link" href="<?= base_url('/admin/types') ?>">Types</a>
             <a class="nav-link" href="<?= base_url('/admin/frais') ?>">Baremes de frais</a>
             <a class="nav-link" href="<?= base_url('/admin/commissions') ?>">Commissions</a>
+            <a class="nav-link" href="<?= base_url('/admin/stats') ?>">Statistiques</a>
             <a class="nav-link" href="<?= base_url('/admin/gains') ?>">Gains</a>
             <a class="nav-link" href="<?= base_url('/admin/clients') ?>">Comptes clients</a>
             <a class="nav-link" href="<?= base_url('/admin/logout') ?>">Deconnexion</a>

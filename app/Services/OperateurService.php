@@ -219,6 +219,56 @@ class OperateurService
         ];
     }
 
+    // Statistiques pour les graphiques
+
+    public function getStatsData(): array
+    {
+        // Transactions par type (pour bar chart)
+        $parType = $this->transactionsModel->getTotalFraisParType();
+
+        // Frais intra/inter separes (pour pie chart des frais)
+        $fraisSepares = $this->transactionsModel->getFraisParTypeAvecSeparation();
+
+        // Commissions dues (pour bar chart des commissions)
+        $commissionsDues = $this->transactionsModel->getCommissionsDues();
+
+        // Stats clients par operateur
+        $clientsParOperateur = $this->utilisateurModel
+            ->select('operateur.labelle, COUNT(utilisateur.id) as total, SUM(porteFeuille.solde) as soldeTotal')
+            ->join('porteFeuille', 'porteFeuille.utilisateurId = utilisateur.id', 'left')
+            ->join('operateur', 'operateur.id = porteFeuille.operateurId', 'left')
+            ->groupBy('operateur.id')
+            ->orderBy('total', 'DESC')
+            ->findAll();
+
+        // Total frais intra
+        $totalIntra = 0.0;
+        $totalInter = 0.0;
+        foreach ($fraisSepares as $l) {
+            if ($l['categorie'] === 'intra') {
+                $totalIntra += (float) $l['total'];
+            } else {
+                $totalInter += (float) $l['total'];
+            }
+        }
+
+        // Total commissions
+        $totalCommissions = 0.0;
+        foreach ($commissionsDues as $c) {
+            $totalCommissions += (float) $c['montantCommission'];
+        }
+
+        return [
+            'parType' => $parType,
+            'totalIntra' => $totalIntra,
+            'totalInter' => $totalInter,
+            'totalGeneral' => $totalIntra + $totalInter,
+            'commissionsDues' => $commissionsDues,
+            'totalCommissions' => $totalCommissions,
+            'clientsParOperateur' => $clientsParOperateur,
+        ];
+    }
+
     // Situation des comptes clients
 
     public function getSituationComptesClients(): array

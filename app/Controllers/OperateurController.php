@@ -211,6 +211,11 @@ class OperateurController extends BaseController
         return view('operateur/gains', $this->operateurService->getSituationGains());
     }
 
+    public function stats(): string
+    {
+        return view('operateur/stats', $this->operateurService->getStatsData());
+    }
+
     public function clients(): string
     {
         return view('operateur/clients', [
