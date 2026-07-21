@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion operateur</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/bootstrap/bootstrap.min.css" rel="stylesheet">
     <?= $this->include('partials/styles') ?>
 </head>
 <body>
@@ -24,11 +24,11 @@
         <form action="<?= base_url('/admin/login') ?>" method="post">
             <div class="mb-3">
                 <label for="labelle" class="form-label">Operateur</label>
-                <input type="text" id="labelle" name="labelle" class="form-control" required value="<?= old('labelle') ?>">
+                <input type="text" id="labelle" name="labelle" class="form-control" required value="MVola">
             </div>
             <div class="mb-3">
                 <label for="motDePasse" class="form-label">Mot de passe</label>
-                <input type="password" id="motDePasse" name="motDePasse" class="form-control" required>
+                <input type="password" id="motDePasse" name="motDePasse" value="password" class="form-control" required>
             </div>
             <button type="submit" class="btn btn-dark w-100">Se connecter</button>
         </form>
