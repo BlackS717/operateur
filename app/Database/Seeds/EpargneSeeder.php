@@ -13,6 +13,7 @@ class EpargneSeeder extends Seeder
             ['utilisateurId' => 2, 'pourcentage' => 20],
             ['utilisateurId' => 3, 'pourcentage' => 5],
             ['utilisateurId' => 4, 'pourcentage' => 5.5],
+            ['utilisateurId' => 5, 'pourcentage' => 10],
 
         ];
 

@@ -13,6 +13,7 @@ class CompteEpargneSeeder extends Seeder
             ['utilisateurId' => 2, 'montant' => 20],
             ['utilisateurId' => 3, 'montant' => 0],
             ['utilisateurId' => 4, 'montant' => 500],
+            ['utilisateurId' => 5, 'montant' => 5000],
 
         ];
 

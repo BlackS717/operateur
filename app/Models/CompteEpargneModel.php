@@ -6,7 +6,7 @@ use CodeIgniter\Model;
 
 class CompteEpargneModel extends Model
 {
-    protected $table            = 'compteepargnes';
+    protected $table            = 'compteEpargne';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';

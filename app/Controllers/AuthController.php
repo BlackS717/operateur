@@ -10,7 +10,7 @@ use App\Services\AuthService;
 class AuthController extends BaseController
 {
 
-    protected $authService;
+    protected AuthService $authService;
     public function __construct()
     {
         $this->authService = service('authService');
@@ -55,9 +55,17 @@ class AuthController extends BaseController
             return redirect()->back()->withInput()->with('reports', $this->validator->getErrors());
         }
 
-        $user = $this->authService->authenticate($this->request->getPost('phone'));
+        $phoneNumber = $this->request->getPost('phone');
+
+        $user = $this->authService->authenticate($phoneNumber);
         if (!$user) {
-            $user = $this->authService->register($this->request->getPost('phone'));
+
+            $user = $this->authService->register($phoneNumber);
+            
+            if($user == null){
+                return redirect()->back()->withInput()->with('reports', ['registration'=>'Registration failed']);
+            }
+
         }
         session()->set('userId', $user['id']);
         return redirect()->to('/user');

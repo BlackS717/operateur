@@ -119,8 +119,27 @@ class ClientController extends BaseController
     }
 
     public function epargne(){
-        $epargne = $this->clientService->getEpargne();
-        return view('operateur/epargne_edit', $epargne);
+        $userId = $this->userId();
+        $epargne = $this->clientService->getEpargne($userId);
+        return view('operateur/epargne_edit', ['epargne' => $epargne]);
+    }
+
+    public function epargneSubmit(){
+        $userId = $this->userId();
+
+        $rules = [
+            'pourcentage'=> 'required|numeric',
+        ];
+
+        if (!$this->validate($rules)) {
+            return redirect()->back()->withInput()->with('reports', $this->validator->getErrors());
+        }
+
+        if(!$this->clientService->updateEpargne($userId, $this->request->getPost('pourcentage'))){
+            redirect()->back()->withInput()->with('reports', ['update'=>'Echec de la mise à jour']);
+        }
+
+        return redirect()->back()->withInput()->with('reports', ['update'=>'Epargne mise à jour']);
     }
 
     public function historique(): string

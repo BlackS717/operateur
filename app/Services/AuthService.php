@@ -21,13 +21,13 @@ class AuthService
         return $this->prefixModel->findAll();
     }
 
-    public function authenticate($numero)
+    public function authenticate(string $numero): ?array
     {
         $user = $this->utilisateurModel->getByNumero($numero);
         return $user;
     }
 
-    public function register($numero)
+    public function register(string $numero): ?array
     {
         $user = $this->utilisateurModel->register($numero);
         return $user;

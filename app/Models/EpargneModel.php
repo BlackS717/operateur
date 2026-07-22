@@ -6,15 +6,15 @@ use CodeIgniter\Model;
 
 class EpargneModel extends Model
 {
-    protected $table            = 'epargnes';
+    protected $table            = 'epargne';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
     protected $allowedFields    = [
+        'utilisateurId',
         'pourcentage',
-        'utilisateurId'
     ];
 
     protected bool $allowEmptyInserts = false;
@@ -48,6 +48,6 @@ class EpargneModel extends Model
     protected $afterDelete    = [];
 
     public function getEpargneByUserId(int $userId){
-        $this->where('utilisateurId', $userId)->first();
+        return $this->where('utilisateurId', $userId)->first();
     }
 }

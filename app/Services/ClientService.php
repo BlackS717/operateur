@@ -301,8 +301,10 @@ class ClientService
         return ['success' => true, 'message' => $message];
     }
 
-    public function updateEpargne(int $epargneId, $pourcentage){
-        $this->epargneModel->update( $epargneId,
+    public function updateEpargne(int $userId, $pourcentage){
+        $epargneId = $this->getEpargne($userId)['id'];
+
+       return  $this->epargneModel->update( $epargneId,
         [
             'pourcentage' => $pourcentage,
         ]);
