@@ -60,6 +60,12 @@ class ClientService
         return $portefeuille ? (float) $portefeuille['solde'] : 0.0;
     }
 
+    public function getSoldeEpargne(int $utilisateurId): float
+    {
+        $compteEpargne = $this->compteEpargneModel->getByUtilisateurId($utilisateurId);
+        return $compteEpargne ? (float) $compteEpargne['montant'] : 0.0;
+    }
+
     private function getTypeIdByNom(string $nom): ?int
     {
         $type = $this->typeTransactionModel->where('nom', $nom)->first();
@@ -275,8 +281,9 @@ class ClientService
         // Exécuter les transferts vers chaque destinataire
         foreach ($details as $d) {
             $destId = (int) $dest['id'];
-            $montantEpargne = $montantParDest * $this->epargneModel->getEpargneByUserId($destId);
-            $montantCrediter =  $$d['montantEnvoye'] - $montantEpargne;
+            $epargneModif = $this->epargneModel->getEpargneByUserId($destId)['pourcentage'] / 100;
+            $montantEpargne = $montantParDest * $epargneModif;
+            $montantCrediter =  $d['montantEnvoye'] - $montantEpargne;
 
             $this->compteEpargneModel->crediter((int) $d['destinataire']['id'], $montantEpargne);
             $this->porteFeuilleModel->crediter((int) $d['destinataire']['id'], $montantCrediter);

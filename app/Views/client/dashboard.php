@@ -17,6 +17,12 @@
             <p class="display-5"><?= number_format($solde, 0, ',', ' ') ?> Ar</p>
         </div>
     </div>
+    <div class="card">
+        <div class="card-body">
+            <h1 class="card-title">Epargne actuel</h1>
+            <p class="display-5"><?= number_format($epargne, 0, ',', ' ') ?> Ar</p>
+        </div>
+    </div>
 </div>
 </body>
 </html>

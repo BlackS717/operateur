@@ -52,7 +52,7 @@ class CompteEpargneModel extends Model
     }
 
     public function getByUtilisateurId(int $userId){
-        return $this->where('utilistateurId', $userId)->first();
+        return $this->where('utilisateurId', $userId)->first();
     }
 
     public function crediter(int $utilisateurId, float $montant): bool

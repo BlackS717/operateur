@@ -37,8 +37,11 @@ class ClientController extends BaseController
 
     public function index(): string
     {
+        $userId = $this->userId();
+
         return view('client/dashboard', [
-            'solde' => $this->clientService->getSolde($this->userId()),
+            'solde' => $this->clientService->getSolde($userId),
+            'epargne' => $this->clientService->getSoldeEpargne($userId),
         ]);
     }
 
