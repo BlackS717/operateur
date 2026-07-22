@@ -18,7 +18,7 @@
             <input type="number" step="0.1" min="0" max="100" name="pourcentage" class="form-control" required value="<?= old('pourcentage', $epargne['pourcentage']) ?>">
         </div>
         <button type="submit" class="btn btn-primary">Enregistrer</button>
-        <a href="<?= base_url('/admin/commissions') ?>" class="btn btn-link">Annuler</a>
+        <a href="<?= base_url('/user') ?>" class="btn btn-link">Annuler</a>
     </form>
 </div>
 </body>
