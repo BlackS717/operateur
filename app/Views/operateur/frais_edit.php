@@ -36,7 +36,7 @@
             <input type="number" step="0.01" name="valeur" class="form-control" required value="<?= old('valeur', $frais['valeur']) ?>">
         </div>
         <button type="submit" class="btn btn-primary">Enregistrer</button>
-        <a href="<?= base_url('/admin/frais') ?>" class="btn btn-link">Annuler</a>
+        <a href="<?= base_url('/user') ?>" class="btn btn-link">Annuler</a>
     </form>
 </div>
 </body>
