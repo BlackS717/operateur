@@ -121,28 +121,29 @@ class ClientController extends BaseController
         return redirect()->to('/user')->with('reports', [$result['message']]);
     }
 
-    public function epargne(){
-        $userId = $this->userId();
-        $epargne = $this->clientService->getEpargne($userId);
-        return view('operateur/epargne_edit', ['epargne' => $epargne]);
-    }
-
-    public function epargneSubmit(){
+    public function epargneSubmit()
+    {
         $userId = $this->userId();
 
         $rules = [
-            'pourcentage'=> 'required|numeric',
+            'pourcentage' => 'required|numeric',
         ];
 
         if (!$this->validate($rules)) {
             return redirect()->back()->withInput()->with('reports', $this->validator->getErrors());
         }
 
-        if(!$this->clientService->updateEpargne($userId, $this->request->getPost('pourcentage'))){
-            redirect()->back()->withInput()->with('reports', ['update'=>'Echec de la mise à jour']);
+        if (!$this->clientService->updateEpargne($userId, $this->request->getPost('pourcentage'))) {
+            redirect()->back()->withInput()->with('reports', ['update' => 'Echec de la mise à jour']);
         }
 
-        return redirect()->back()->withInput()->with('reports', ['update'=>'Epargne mise à jour']);
+        return redirect()->back()->withInput()->with('reports', ['update' => 'Epargne mise à jour']);
+    }
+    public function epargne()
+    {
+        $epargne = $this->clientService->getEpargne($this->userId());
+        $compteEpargne = $this->clientService->getCompteEpargne($this->userId());
+        return view('operateur/epargne_edit', ['epargne' => $epargne, 'compte' => $compteEpargne]);
     }
 
     public function historique(): string

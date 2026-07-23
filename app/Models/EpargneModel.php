@@ -47,7 +47,8 @@ class EpargneModel extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-    public function getEpargneByUserId(int $userId){
+    public function getEpargneByUserId(int $userId): ?array
+    {
         return $this->where('utilisateurId', $userId)->first();
     }
 }

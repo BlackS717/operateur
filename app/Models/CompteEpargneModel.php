@@ -47,10 +47,6 @@ class CompteEpargneModel extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-    public function getCompteEpargneByUserId(int $userId){
-        return $this->where('utilisateurId', $userId)->first();
-    }
-
     public function getByUtilisateurId(int $userId){
         return $this->where('utilisateurId', $userId)->first();
     }
