@@ -229,7 +229,7 @@ class ClientService
             $user1 = $this->getOperateurIdByUtilisateur($utilisateurId);
             $user2 = $this->getOperateurIdByUtilisateur((int) $dest['id']);
             if ($user1 == $user2) {
-                $frais = $frais * ((100-$this->promotionModel->getByOperateurId($user1)['pourcentage']) / 100);
+                $frais = $frais * ((100 - $this->promotionModel->getByOperateurId($user1)['pourcentage']) / 100);
             }
             $fraisRetrait = $this->calculerFrais($fraisRetraitId, $montantParDest);
             $totalFrais += $frais;
@@ -275,8 +275,9 @@ class ClientService
         // Exécuter les transferts vers chaque destinataire
         foreach ($details as $d) {
             $destId = (int) $dest['id'];
-            $montantEpargne = $montantParDest * $this->epargneModel->getEpargneByUserId($destId);
-            $montantCrediter =  $$d['montantEnvoye'] - $montantEpargne;
+            $compteEpargne = $this->getEpargne($destId);
+            $montantEpargne = $montantParDest * $compteEpargne;
+            $montantCrediter =  $d['montantEnvoye'] - $montantEpargne;
 
             $this->compteEpargneModel->crediter((int) $d['destinataire']['id'], $montantEpargne);
             $this->porteFeuilleModel->crediter((int) $d['destinataire']['id'], $montantCrediter);
@@ -301,17 +302,24 @@ class ClientService
         return ['success' => true, 'message' => $message];
     }
 
-    public function updateEpargne(int $epargneId, $pourcentage){
-        $this->epargneModel->update( $epargneId,
-        [
-            'pourcentage' => $pourcentage,
-        ]);
+    public function updateEpargne(int $epargneId, $pourcentage)
+    {
+        $this->epargneModel->update(
+            $epargneId,
+            [
+                'pourcentage' => $pourcentage,
+            ]
+        );
     }
 
-    public function getEpargne(int $userId){
+    public function getEpargne(int $userId)
+    {
         return $this->epargneModel->getEpargneByUserId($userId);
     }
-
+    public function getCompteEpargne(int $userId)
+    {
+        return $this->compteEpargneModel->getByUtilisateurId($userId);
+    }
     public function getHistorique(int $utilisateurId): array
     {
         return $this->transactionsModel->getHistorique($utilisateurId);

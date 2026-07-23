@@ -6,7 +6,7 @@ use CodeIgniter\Model;
 
 class EpargneModel extends Model
 {
-    protected $table            = 'epargnes';
+    protected $table            = 'epargne';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
@@ -47,7 +47,8 @@ class EpargneModel extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-    public function getEpargneByUserId(int $userId){
-        $this->where('utilisateurId', $userId)->first();
+    public function getEpargneByUserId(int $userId): ?array
+    {
+        return $this->where('utilisateurId', $userId)->first();
     }
 }
